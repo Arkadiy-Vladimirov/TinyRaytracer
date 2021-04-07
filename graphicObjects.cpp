@@ -8,7 +8,10 @@ class Camera {
 class GraphObject {
 
 };
-    //descendant class - emitters
+
+class Emitter : public GraphObject {
+
+};
 
 class Ray {
 
