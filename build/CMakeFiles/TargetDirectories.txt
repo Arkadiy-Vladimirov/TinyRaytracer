@@ -1,0 +1,3 @@
+/home/ark/MashGraph/task2/build/CMakeFiles/rebuild_cache.dir
+/home/ark/MashGraph/task2/build/CMakeFiles/main.dir
+/home/ark/MashGraph/task2/build/CMakeFiles/edit_cache.dir

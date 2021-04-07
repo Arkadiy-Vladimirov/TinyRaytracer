@@ -1,0 +1,14 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/ark/MashGraph/task2/graphicObjects.cpp
+graphicObjects.hpp
+/home/ark/MashGraph/task2/graphicObjects.hpp
+
+/home/ark/MashGraph/task2/graphicObjects.hpp
+

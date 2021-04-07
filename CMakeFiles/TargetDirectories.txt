@@ -1,0 +1,3 @@
+/home/ark/MashGraph/msu_cmc_cg_2021/template1_cpp/CMakeFiles/rebuild_cache.dir
+/home/ark/MashGraph/msu_cmc_cg_2021/template1_cpp/CMakeFiles/main.dir
+/home/ark/MashGraph/msu_cmc_cg_2021/template1_cpp/CMakeFiles/edit_cache.dir
