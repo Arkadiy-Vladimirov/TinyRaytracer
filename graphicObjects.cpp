@@ -1,18 +1,6 @@
 #include "graphicObjects.hpp"
 #include "Image.h"
 
-class Camera {
-
-};
-
-class GraphObject {
-
-};
-
-class Emitter : public GraphObject {
-
-};
-
-class Ray {
-
+Camera::Camera(int resX, int resY, int a_channels, Point3 foc_pos) : matrix(resX, resY, a_channels){
+    focus = foc_pos;
 };
