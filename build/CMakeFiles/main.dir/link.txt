@@ -1,1 +1,1 @@
-/usr/bin/c++  -g   CMakeFiles/main.dir/glad.c.o CMakeFiles/main.dir/Image.cpp.o CMakeFiles/main.dir/graphicObjects.cpp.o CMakeFiles/main.dir/main.cpp.o  -o ../bin/main /usr/lib/x86_64-linux-gnu/libGL.so /usr/lib/x86_64-linux-gnu/libglfw.so.3.2 -lrt -ldl 
+/usr/bin/c++  -g   CMakeFiles/main.dir/glad.c.o CMakeFiles/main.dir/Image.cpp.o CMakeFiles/main.dir/lin_al.cpp.o CMakeFiles/main.dir/graphicObjects.cpp.o CMakeFiles/main.dir/main.cpp.o  -o ../bin/main /usr/lib/x86_64-linux-gnu/libGL.so /usr/lib/x86_64-linux-gnu/libglfw.so.3.2 -lrt -ldl 

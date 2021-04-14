@@ -21,6 +21,7 @@ set(CMAKE_C_TARGET_INCLUDE_PATH
 set(CMAKE_DEPENDS_CHECK_CXX
   "/home/ark/MashGraph/task2/Image.cpp" "/home/ark/MashGraph/task2/build/CMakeFiles/main.dir/Image.cpp.o"
   "/home/ark/MashGraph/task2/graphicObjects.cpp" "/home/ark/MashGraph/task2/build/CMakeFiles/main.dir/graphicObjects.cpp.o"
+  "/home/ark/MashGraph/task2/lin_al.cpp" "/home/ark/MashGraph/task2/build/CMakeFiles/main.dir/lin_al.cpp.o"
   "/home/ark/MashGraph/task2/main.cpp" "/home/ark/MashGraph/task2/build/CMakeFiles/main.dir/main.cpp.o"
   )
 set(CMAKE_CXX_COMPILER_ID "GNU")

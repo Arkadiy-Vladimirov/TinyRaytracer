@@ -1,24 +1,23 @@
 #include "Image.h"
+#include "lin_al.hpp"
 
-struct Vec2 {
-    double x, y;
-
-    Vec2(double x1 = 0, double x2 = 0) {x = x1; y = x2;}
-};
-struct Vec3 : Vec2{
-    double z;
-
-    Vec3(double x1 = 0, double x2 = 0, double x3 = 0) : Vec2(x1, x2) {z = x3;} 
-};
-
-class Camera { //view direction?
+/*class Camera {
     Vec3 focus;
-    Vec3 view_direction;
-    Vec2 fov; //degrees
+    Vec3 view_direction; //has to have ||.|| = 1
+    double fov; //degrees
     Image matrix;
+    Vec2 matrix_size; //cm
+    
+    //redundant but helpful data
+    Vec3 matrix_origin; // (x,y) = (0,0)
+    Vec2 pixel_size; //cm
+    Vec3 x_base; //to shift one pixel to the positive x direction in matrix
+    Vec3 y_base; //----||---- y direction
 
 public:
-    Camera(Vec3 foc_pos, Vec3 v_dir, Vec2 fov = Vec2(90,60), Vec2 resolution = Vec2(1024, 1024), int a_channels = 4);
+    Camera(Vec3 foc_pos, Vec3 v_dir, double degrees = 90, Vec2 resolution = Vec2(1024, 1024), int a_channels = 4,
+                                                                            Vec2 mat_size = Vec2(10,10));
+    Image* RenderImage();
 };
 
 class GraphObject {
@@ -31,7 +30,7 @@ class Emitter : public GraphObject {
 
 class Ray {
 
-};
+};*/
     
     
     

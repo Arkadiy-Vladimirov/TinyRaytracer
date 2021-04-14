@@ -1,5 +1,7 @@
 #include "common.h"
 #include "Image.h"
+#include "lin_al.hpp"
+#include <stdio.h>
 
 #define GLFW_DLL
 #include <GLFW/glfw3.h>
@@ -103,6 +105,8 @@ int initGL()
 
 int main(int argc, char** argv)
 {
+try {
+
 	if(!glfwInit())
     return -1;
 
@@ -134,8 +138,6 @@ int main(int argc, char** argv)
 	while (gl_error != GL_NO_ERROR)
 		gl_error = glGetError();
 
-try {
-  
 	//Image img("../resources/tex.png");
 	Image screenBuffer(WINDOW_WIDTH, WINDOW_HEIGHT, 4);
 
@@ -143,6 +145,15 @@ try {
 
   glViewport(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);  GL_CHECK_ERRORS;
   glClearColor(0.0f, 0.0f, 0.0f, 1.0f); GL_CHECK_ERRORS;
+
+  //__test_area__
+    Vec<3,float> a(1,2,3), b(3,2,1);
+    Vec<3,float> c, d;
+    c = d = a + b;
+    fprintf(stdout,"%f\n",c.x);
+    fprintf(stdout,"%f\n",c.y);
+    fprintf(stdout,"%f\n",c.z);
+  //_____________
 
   //game loop
 	while (!glfwWindowShouldClose(window))
@@ -156,17 +167,15 @@ try {
     glDrawPixels (WINDOW_WIDTH, WINDOW_HEIGHT, GL_RGBA, GL_UNSIGNED_BYTE, screenBuffer.Data()); GL_CHECK_ERRORS;
 
 		glfwSwapBuffers(window);
-        }
+  }
 
-        while (!glfwWindowShouldClose(window)){
-    glfwPollEvents();
-        }
-
-	glfwTerminate();
-	return 0;
+  glfwTerminate();
+	
+  return 0;
 
 } catch(const char *exception) {
     fprintf(stderr,"%s\n",exception);
   }
+  return 1;
 }
 
