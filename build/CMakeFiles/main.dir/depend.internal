@@ -15,10 +15,6 @@ CMakeFiles/main.dir/graphicObjects.cpp.o
  /home/ark/MashGraph/task2/graphicObjects.cpp
  /home/ark/MashGraph/task2/graphicObjects.hpp
  /home/ark/MashGraph/task2/lin_al.hpp
-CMakeFiles/main.dir/lin_al.cpp.o
- /home/ark/MashGraph/task2/Image.h
- /home/ark/MashGraph/task2/lin_al.cpp
- /home/ark/MashGraph/task2/lin_al.hpp
 CMakeFiles/main.dir/main.cpp.o
  ../dependencies/include/GLAD/KHR/khrplatform.h
  ../dependencies/include/GLAD/glad/glad.h

@@ -1,0 +1,2 @@
+lin_al.hpp:
+    implement vector*number

@@ -1,7 +1,7 @@
 #ifndef __LIN_AL_HPP__
 #define __LIN_AL_HPP__
 
-#include "Image.h"
+#include "Image.h" //just for uint8_t type
 
 template<unsigned dim, class type>
 struct Vec {
@@ -14,17 +14,20 @@ public:
     const Vec<dim,type>& operator=(const Vec<dim,type> rv) {for(unsigned i = 0; i < dim; ++i) data[i] = rv[i]; return *this;};
 };
 
+typedef Vec<2,unsigned> Vec2un;
+typedef Vec<3,float> Vec3f;
+typedef Vec<2,float> Vec2f;
+
 template<class type>    //float/int/etc. 2d coordinates vector
 struct Vec<2,type> {
     type x, y;
 
-    Vec() : x(type()), y(type()) {};
+    Vec() /*: x(type()), y(type())*/ {};
     Vec(const type fx, const type fy) : x(fx), y(fy) {}
           type& operator[](unsigned int idx);
     const type& operator[](unsigned int idx) const;
     const Vec<2,type>& operator=(const Vec<2,type> rv) {x = rv.x; y = rv.y; return *this;};
 };
-
 template<class type>    //float/int/etc. 3d coordinates vector
 struct Vec<3,type> {
     type x, y, z;
@@ -35,6 +38,7 @@ struct Vec<3,type> {
     const type& operator[](unsigned int idx) const;
     const Vec<3,type>& operator=(const Vec<3,type> rv) {x = rv.x; y = rv.y; z = rv.z; return *this;};
 };
+
 
 template<>              //color vector
 struct Vec<3,uint8_t> {

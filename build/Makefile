@@ -204,33 +204,6 @@ graphicObjects.cpp.s:
 	$(MAKE) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/graphicObjects.cpp.s
 .PHONY : graphicObjects.cpp.s
 
-lin_al.o: lin_al.cpp.o
-
-.PHONY : lin_al.o
-
-# target to build an object file
-lin_al.cpp.o:
-	$(MAKE) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/lin_al.cpp.o
-.PHONY : lin_al.cpp.o
-
-lin_al.i: lin_al.cpp.i
-
-.PHONY : lin_al.i
-
-# target to preprocess a source file
-lin_al.cpp.i:
-	$(MAKE) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/lin_al.cpp.i
-.PHONY : lin_al.cpp.i
-
-lin_al.s: lin_al.cpp.s
-
-.PHONY : lin_al.s
-
-# target to generate assembly for a file
-lin_al.cpp.s:
-	$(MAKE) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/lin_al.cpp.s
-.PHONY : lin_al.cpp.s
-
 main.o: main.cpp.o
 
 .PHONY : main.o
@@ -276,9 +249,6 @@ help:
 	@echo "... graphicObjects.o"
 	@echo "... graphicObjects.i"
 	@echo "... graphicObjects.s"
-	@echo "... lin_al.o"
-	@echo "... lin_al.i"
-	@echo "... lin_al.s"
 	@echo "... main.o"
 	@echo "... main.i"
 	@echo "... main.s"
