@@ -1,6 +1,7 @@
 #include "common.h"
 #include "Image.h"
 #include "lin_al.hpp"
+#include "graphicObjects.hpp"
 #include <stdio.h>
 
 #define GLFW_DLL
@@ -147,12 +148,15 @@ try {
   glClearColor(0.0f, 0.0f, 0.0f, 1.0f); GL_CHECK_ERRORS;
 
   //__test_area__
-    Vec<3,float> a(1,2,3), b(3,2,1);
-    Vec<3,float> c, d;
-    c = d = a + b;
-    fprintf(stdout,"%f\n",c.x);
-    fprintf(stdout,"%f\n",c.y);
-    fprintf(stdout,"%f\n",c.z);
+    //Vec<3,float> a(1,2,3), b(3,2,1);
+    //Vec<3,float> c, d;
+    //c = d = a + b;
+    //fprintf(stdout,"%f\n",c.x);
+    //fprintf(stdout,"%f\n",c.y);
+    //fprintf(stdout,"%f\n",c.z);
+    
+    Vec<3,float> camera_position(0,0,0), view_direction(1,1,1); 
+    Camera camera(camera_position, view_direction);
   //_____________
 
   //game loop
