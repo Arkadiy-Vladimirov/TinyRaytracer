@@ -47,7 +47,7 @@ template<>              //color vector
 struct Vec<3,uint8_t> {
     uint8_t r, g, b;
 
-    Vec(const uint8_t fr, const uint8_t fg, const uint8_t fb) : r(fr), g(fg), b(fb) {}
+    Vec(const uint8_t fr = 255, const uint8_t fg = 255, const uint8_t fb = 255) : r(fr), g(fg), b(fb) {}
           uint8_t& operator[](unsigned int idx);
     const uint8_t& operator[](unsigned int idx) const;
     const Vec<3,uint8_t>& operator=(const Vec<3,uint8_t> rv) {r = rv.r; g = rv.g; b = rv.b; return *this;};
@@ -257,6 +257,7 @@ struct Repere { //different phi not implemented, has to be private
         e3 = cross(e1,e2);
     };
     Repere(const Vec<3,float>& f_origin, const Vec<3,float>& f_e1, const Vec<3,float> f_e2) {orig = f_origin; e1 = f_e1; e2 = f_e2; e3 = cross(e1,e2); }; //not normalized right triplet
+    Repere(const Repere& rep) {orig = rep.orig; e1 = rep.e1; e2 = rep.e2; e3 = rep.e3;};
 };
 //____________________________________________________________
 

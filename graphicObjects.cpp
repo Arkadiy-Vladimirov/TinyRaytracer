@@ -3,7 +3,7 @@
 
 #include "graphicObjects.hpp"
 
-Camera::Camera(Vec<3,float> f_origin, Vec<3,float> view_dir, double f_fov, Vec2un resolution, int a_channels, Vec2f f_mat_size) : cam_base(f_origin, view_dir), matrix(resolution.x, resolution.y, a_channels)  { //warning: channels!
+Camera::Camera(Vec3f f_origin, Vec3f view_dir, double f_fov, Vec2un resolution, int a_channels, Vec2f f_mat_size) : cam_base(f_origin, view_dir), matrix(resolution.x, resolution.y, a_channels)  { //warning: channels!
     fov = f_fov;
     matrix_size = f_mat_size;
 
@@ -17,7 +17,27 @@ Camera::Camera(Vec<3,float> f_origin, Vec<3,float> view_dir, double f_fov, Vec2u
 };
 
 const Image& Camera::RenderImage(const Scene& scene) {
+    for (int x = 0; x < matrix.Width(); ++x) {
+    for (int y = 0; y < matrix.Height(); ++y) {
+        //Ray(orig,dir);
+        //Color col = Ray.Cast();    
+        //matrix.PutPixel(x,y,Pixel{col.r, col.g ,col.b, 255}); 
+    }
+    }
     return matrix;
+};
+
+
+Scene::~Scene() {
+    for (unsigned i = 0; i < size; ++i)
+        delete data[i];
+    delete[] data;
+};
+
+GraphObject*& Scene::operator[](unsigned idx) {
+    if (idx < size)
+        return data[idx];
+    else throw "error: array index out of bounds";
 };
 
 #endif //__grObj_cpp__

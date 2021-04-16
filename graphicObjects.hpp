@@ -26,7 +26,7 @@ class Camera {
     Vec2f pixel_size; //cm
 
 public:
-    Camera(Vec<3,float> f_origin, Vec<3,float> view_dir, double f_fov = PI/2, Vec2un resolution = Vec2un(1024, 1024),
+    Camera(Vec3f f_origin, Vec3f view_dir, double f_fov = PI/2, Vec2un resolution = Vec2un(1024, 1024),
                                                             int a_channels = 3, Vec2f f_mat_size = Vec2f(10,10)); //warning: channels!
     const Image& RenderImage(const Scene& scene);
 
