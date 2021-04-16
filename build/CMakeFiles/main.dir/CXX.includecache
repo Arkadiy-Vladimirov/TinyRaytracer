@@ -50,6 +50,10 @@ string
 glad/glad.h
 -
 
+/home/ark/MashGraph/task2/graphicObjects.cpp
+graphicObjects.hpp
+/home/ark/MashGraph/task2/graphicObjects.hpp
+
 /home/ark/MashGraph/task2/graphicObjects.hpp
 Image.h
 /home/ark/MashGraph/task2/Image.h

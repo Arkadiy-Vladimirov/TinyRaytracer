@@ -1,8 +1,6 @@
 cmake_minimum_required(VERSION 3.5)
 project(main)
 
-set(CMAKE_BUILD_TYPE Debug)
-
 set(CMAKE_CXX_STANDARD 14)
 
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/bin)
@@ -14,6 +12,8 @@ set(SOURCE_FILES
         Image.cpp
         graphicObjects.cpp
         main.cpp)
+
+
 
 set(ADDITIONAL_INCLUDE_DIRS
         dependencies/include/GLAD)

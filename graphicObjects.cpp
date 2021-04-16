@@ -1,4 +1,8 @@
+#ifndef __grObj_cpp__
+#define __grObj_cpp__
+
 #include "graphicObjects.hpp"
+
 Camera::Camera(Vec<3,float> f_origin, Vec<3,float> view_dir, double f_fov, Vec2un resolution, int a_channels, Vec2f f_mat_size) : cam_base(f_origin, view_dir), matrix(resolution.x, resolution.y, a_channels)  { //warning: channels!
     fov = f_fov;
     matrix_size = f_mat_size;
@@ -11,3 +15,9 @@ Camera::Camera(Vec<3,float> f_origin, Vec<3,float> view_dir, double f_fov, Vec2u
     mat_base.e1 = pixel_size.x * (-cam_base.e2);
     mat_base.e2 = pixel_size.y * (-cam_base.e3); 
 };
+
+const Image& Camera::RenderImage(const Scene& scene) {
+    return matrix;
+};
+
+#endif //__grObj_cpp__
