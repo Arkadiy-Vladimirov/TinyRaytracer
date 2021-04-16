@@ -9,8 +9,11 @@
 
 typedef Vec<2,unsigned> Vec2un;
 typedef Vec<2,float> Vec2f;
+typedef Vec<3,uint8_t> Color;
+typedef Vec<3,float> Vec3f;
 
-class Scene; 
+class Scene;
+class GraphObject; 
 
 class Camera {
     Repere cam_base; //e1 - fwd, e2 - lft, e3 - top
@@ -26,23 +29,47 @@ public:
     Camera(Vec<3,float> f_origin, Vec<3,float> view_dir, double f_fov = PI/2, Vec2un resolution = Vec2un(1024, 1024),
                                                             int a_channels = 3, Vec2f f_mat_size = Vec2f(10,10)); //warning: channels!
     const Image& RenderImage(const Scene& scene);
-};
 
-class Scene {
-
-};
-
-/*class GraphObject {
-
-};
-
-class Emitter : public GraphObject {
-
+    //Vec2un MatrixRes() const {return Vec2un(matrix.Width(), matrix.Height());}; 
 };
 
 class Ray {
+    //fields
+public:
+    Ray(Vec3f f_orig, Vec3f f_dir);
+    Color Cast();
+};
+
+class Scene { //use carefully
+    unsigned size;
+    GraphObject** data;
+public:
+    Scene(unsigned f_size) : size(f_size) {data = new GraphObject*[f_size];}
+    ~Scene();//u.c.            
+
+    GraphObject*& operator[](unsigned idx); //u.c.
+};
+
+class GraphObject {
+protected:
+    Repere location;
+public:
+    GraphObject(const Repere& f_loc = Repere()) : location(f_loc) {};
+    virtual ~GraphObject() {};
+};
+
+class MonochromeSphere : public GraphObject {
+    float radius;
+    Color color;
+public:
+    MonochromeSphere(const Repere& f_loc = Repere(), float f_rad = 1, const Color& f_col = Color()) : GraphObject(f_loc), radius(f_rad), color(f_col) {};
+    virtual ~MonochromeSphere() {};
+};
+
+/*class Emitter : public GraphObject {
 
 };*/
+
 
 
     
