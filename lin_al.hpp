@@ -4,6 +4,7 @@
 #include "Image.h" //just for uint8_t type
 #include <cmath>
 
+//_____________________________DECLARATION__________________________
 //____________vectors_________________
 template<unsigned dim, class type>
 struct Vec {
@@ -17,8 +18,8 @@ public:
 };
 
 typedef Vec<2,unsigned> Vec2un;
-typedef Vec<3,float> Vec3f;
 typedef Vec<2,float> Vec2f;
+typedef Vec<3,uint8_t> VecCol;
 
 template<class type>    //float/int/etc. 2d coordinates vector
 struct Vec<2,type> {
@@ -42,7 +43,6 @@ struct Vec<3,type> {
     const Vec<3,type>& operator=(const Vec<3,type> rv) {x = rv.x; y = rv.y; z = rv.z; return *this;};
 };
 
-
 template<>              //color vector
 struct Vec<3,uint8_t> {
     uint8_t r, g, b;
@@ -52,19 +52,65 @@ struct Vec<3,uint8_t> {
     const uint8_t& operator[](unsigned int idx) const;
     const Vec<3,uint8_t>& operator=(const Vec<3,uint8_t> rv) {r = rv.r; g = rv.g; b = rv.b; return *this;};
 };
+//_____________________________________________________________
 
 //_________________other_structures____________________________
 struct Repere { //different phi not implemented, has to be private
     Vec<3,float> orig;
     Vec<3,float> e1, e2, e3;
 
-    Repere(); //natural R3 basis
+    Repere(); //generates natural R3 basis
     Repere(const Vec<3,float>& f_origin, const Vec<3,float>& f_forward, const float phi = 0); //normalized right triplet 
-    Repere(const Vec<3,float>& f_origin, const Vec<3,float>& f_e1, const Vec<3,float> f_e2);  //right triplet
+    Repere(const Vec<3,float>& f_origin, const Vec<3,float>& f_e1, const Vec<3,float> f_e2);  //not normalized right triplet
 };
 
-//________________vector_operations____________________________
-//________________indexing_overload____________________________
+//_____________________vector_operations________________________
+//________________arithmetic_operators_overload_________________
+//                        unary:
+template <unsigned dim, class type>
+Vec<dim,type> operator+(const Vec<dim,type>& a); 
+
+template <unsigned dim, class type>
+Vec<dim,type> operator-(const Vec<dim,type>& a);
+
+//                       binary:
+template <unsigned dim, class type>
+Vec<dim,type> operator+(const Vec<dim,type>& a, const Vec<dim,type>& b);
+
+template <unsigned dim, class type>
+Vec<dim,type> operator-(const Vec<dim,type>& a, const Vec<dim,type>& b);
+
+template <unsigned dim, class type> //componentwise product
+Vec<dim,type> operator*(const Vec<dim,type>& a, const Vec<dim,type>& b); 
+//______________________________________________________________
+
+
+//_________________special_vector_operations____________________
+template <unsigned dim, class type>
+Vec<dim,type> operator*(const Vec<dim,type>& a, float alpha);
+
+template <unsigned dim, class type>
+Vec<dim,type> operator*(float alpha, const Vec<dim,type>& a);
+
+template <class type>
+Vec<3,type> cross(const Vec<3,type>& a, const Vec<3,type>& b);
+
+template <unsigned dim, class type>
+type scalar(const Vec<dim,type>& a, const Vec<dim,type>& b); 
+
+template <unsigned dim, class type>
+type norm(const Vec<dim,type>& a);
+
+template <unsigned dim, class type>
+Vec<3,type> normalize(const Vec<dim,type>& a);
+//______________________________________________________________
+//______________________________________________________________
+
+
+
+
+//_____________________IMPLEMENTATION___________________________
+//____________________indexing_overload_________________________
 template <class type>
 inline       type& Vec<2,type>::operator[](unsigned idx) {
          if (idx == 0) return x;
@@ -107,6 +153,32 @@ inline const uint8_t& Vec<3,uint8_t>::operator[](unsigned idx) const {
     else if (idx == 1) return g;
     else if (idx == 2) return b;
     else               throw "error: array index out of bounds";
+}
+//______________________________________________________________
+
+//_________________repere_class_constructors____________________
+Repere::Repere() {
+    orig = 0;
+    e1 = Vec<3,float>(1,0,0); e2 = Vec<3,float>(0,1,0); e3 = Vec<3,float>(0,0,1);
+}
+
+Repere::Repere(const Vec<3,float>& f_origin, const Vec<3,float>& f_forward, const float phi) {
+    orig = f_origin;
+
+    const Repere basic;
+
+    e1 = normalize(f_forward);
+
+    Vec<3,float> e1_proj = scalar(e1,basic.e1) * basic.e1 + scalar(e1,basic.e2) * basic.e2; //projection on x: <e3,x> = 0 plane
+    e2.x = -e1_proj.y; e2.y = e1_proj.x; e3.z = 0; //+90 degrees rotation
+    e2 =  (1/(norm(e2)))*e2;
+
+    e3 = cross(e1,e2);
+}
+
+Repere::Repere(const Vec<3,float>& f_origin, const Vec<3,float>& f_e1, const Vec<3,float> f_e2){
+    orig = f_origin; e1 = f_e1; e2 = f_e2;
+    e3 = cross(e1,e2);
 }
 //______________________________________________________________
 
@@ -157,53 +229,6 @@ Vec<dim,type> operator*(const Vec<dim,type>& a, const Vec<dim,type>& b) {
 
 
 //_________________special_vector_operations____________________
-
-template <unsigned dim, class type>
-Vec<dim,type> operator*(const Vec<dim,type>& a, float alpha);
-
-template <unsigned dim, class type>
-Vec<dim,type> operator*(float alpha, const Vec<dim,type>& a);
-
-template <class type>
-Vec<3,type> cross(const Vec<3,type>& a, const Vec<3,type>& b);
-
-template <unsigned dim, class type>
-type scalar(const Vec<dim,type>& a, const Vec<dim,type>& b); 
-
-template <unsigned dim, class type>
-type norm(const Vec<dim,type>& a);
-
-template <unsigned dim, class type>
-Vec<3,type> normalize(const Vec<dim,type>& a);
-
-//______________________________________________________________
-
-
-Repere::Repere() {
-    orig = 0;
-    e1 = Vec<3,float>(1,0,0); e2 = Vec<3,float>(0,1,0); e3 = Vec<3,float>(0,0,1);
-}
-
-Repere::Repere(const Vec<3,float>& f_origin, const Vec<3,float>& f_forward, const float phi) {
-    orig = f_origin;
-
-    const Repere basic;
-
-    e1 = normalize(f_forward);
-
-    Vec<3,float> e1_proj = scalar(e1,basic.e1) * basic.e1 + scalar(e1,basic.e2) * basic.e2; //projection on x: <e3,x> = 0 plane
-    e2.x = -e1_proj.y; e2.y = e1_proj.x; e3.z = 0; //+90 degrees rotation
-    e2 =  (1/(norm(e2)))*e2;
-
-    e3 = cross(e1,e2);
-}
-
-Repere::Repere(const Vec<3,float>& f_origin, const Vec<3,float>& f_e1, const Vec<3,float> f_e2){
-    orig = f_origin; e1 = f_e1; e2 = f_e2;
-    e3 = cross(e1,e2);
-}
-
-
 template <unsigned dim, class type>
 Vec<dim,type> operator*(const Vec<dim,type>& a, float alpha) {
     Vec<dim,type> res = a;
@@ -245,5 +270,7 @@ Vec<3,type> normalize(const Vec<dim,type>& a) {
         return (1/(norm(a)))*a;
     else throw "error: unable to normalize vector (zero norm)";
 }
+//____________________________________________________________
+//____________________________________________________________
 
 #endif //__LIN_AL_HPP__

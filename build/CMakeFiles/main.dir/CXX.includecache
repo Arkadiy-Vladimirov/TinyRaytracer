@@ -50,10 +50,6 @@ string
 glad/glad.h
 -
 
-/home/ark/MashGraph/task2/graphicObjects.cpp
-graphicObjects.hpp
-/home/ark/MashGraph/task2/graphicObjects.hpp
-
 /home/ark/MashGraph/task2/graphicObjects.hpp
 Image.h
 /home/ark/MashGraph/task2/Image.h
@@ -71,10 +67,6 @@ cmath
 /home/ark/MashGraph/task2/main.cpp
 common.h
 /home/ark/MashGraph/task2/common.h
-Image.h
-/home/ark/MashGraph/task2/Image.h
-lin_al.hpp
-/home/ark/MashGraph/task2/lin_al.hpp
 graphicObjects.hpp
 /home/ark/MashGraph/task2/graphicObjects.hpp
 stdio.h

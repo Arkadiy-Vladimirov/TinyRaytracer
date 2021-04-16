@@ -1,6 +1,6 @@
 #include "common.h"
-#include "Image.h"
-#include "lin_al.hpp"
+//#include "Image.h"
+//#include "lin_al.hpp"
 #include "graphicObjects.hpp"
 #include <stdio.h>
 
