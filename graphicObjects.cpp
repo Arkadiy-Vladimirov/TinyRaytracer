@@ -36,7 +36,13 @@ Scene::~Scene() {
     delete[] data;
 };
 
-GraphObject*& Scene::operator[](unsigned idx) const{
+const GraphObject* Scene::operator[](unsigned idx) const {
+    if (idx < size)
+        return data[idx];
+    else throw "error: array index out of bounds";
+};
+
+GraphObject*& Scene::operator[](unsigned idx) {
     if (idx < size)
         return data[idx];
     else throw "error: array index out of bounds";
@@ -44,6 +50,8 @@ GraphObject*& Scene::operator[](unsigned idx) const{
 
 
 Vec3f MonochromeSphere::CheckHit(const Ray& ray) const {
+    //Vec3f OC = location.orig - ray.GetOrigin();// ray origin -> sphere center vector
+    //solve quadratic equation
     return Vec3f();
 };
 
@@ -52,22 +60,28 @@ Color MonochromeSphere::Hit(const Ray& ray) const {
 };
 
 Color Ray::Cast(const Scene& scene) const {
+    Color resCol; //default color (ray reached maximum render distance)
+    const GraphObject* hitted_obj_ptr = HittedObjectPtr(scene);
+    if (hitted_obj_ptr != NULL)
+        resCol = hitted_obj_ptr->Hit(*this);
+    
+    return resCol;
+};
+
+const GraphObject* Ray::HittedObjectPtr(const Scene& scene) const {//probably has to substitute render distance with skySphere object hit
     Vec3f old_hit_point = Camera::GetRenderDistance() * direction; //inaccurate
-    Color resCol; int hit_obj_idx = -1;
     Vec3f new_hit_point;
+    const GraphObject* obj_ptr = NULL; 
 
     for (int i = 0; i < scene.GetSize(); ++i) {
         new_hit_point = scene[i]->CheckHit(*this);
         if (norm(new_hit_point) < norm(old_hit_point)) {
             old_hit_point = new_hit_point;
-            hit_obj_idx = i;
+            obj_ptr = scene[i];
         };
     };
 
-    if (hit_obj_idx != -1)
-        resCol = scene[hit_obj_idx]->Hit(*this);
-    
-    return resCol;
+    return obj_ptr;
 };
 
 #endif //__grObj_cpp__

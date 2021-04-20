@@ -6,10 +6,48 @@
 
 #IncludeRegexTransform: 
 
+../dependencies/include/GLAD/KHR/khrplatform.h
+stdint.h
+-
+inttypes.h
+-
+stdint.h
+-
+
+../dependencies/include/GLAD/glad/glad.h
+windows.h
+-
+stddef.h
+-
+KHR/khrplatform.h
+-
+inttypes.h
+-
+inttypes.h
+-
+inttypes.h
+-
+stdint.h
+-
+stdint.h
+-
+inttypes.h
+-
+
 /home/ark/MashGraph/task2/Image.h
 string
 -
 fstream
+-
+
+/home/ark/MashGraph/task2/common.h
+iostream
+-
+fstream
+-
+string
+-
+glad/glad.h
 -
 
 /home/ark/MashGraph/task2/graphicObjects.cpp
@@ -28,5 +66,15 @@ cmath
 Image.h
 /home/ark/MashGraph/task2/Image.h
 cmath
+-
+
+/home/ark/MashGraph/task2/main.cpp
+common.h
+/home/ark/MashGraph/task2/common.h
+graphicObjects.hpp
+/home/ark/MashGraph/task2/graphicObjects.hpp
+stdio.h
+-
+GLFW/glfw3.h
 -
 

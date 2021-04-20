@@ -44,7 +44,12 @@ class Ray {
     Vec3f direction;
 public:
     Ray(Vec3f f_orig, Vec3f f_dir) {orig = f_orig; direction = normalize(f_dir); };
+
     Color Cast(const Scene& scene) const;
+    const GraphObject* HittedObjectPtr(const Scene& scene) const; //NULL means no hit
+
+    Vec3f GetOrigin() const {return orig;};
+    Vec3f GetDirection() const {return direction;};
 };
 
 class Scene { //use carefully
@@ -55,8 +60,8 @@ public:
     ~Scene();//u.c.            
 
     unsigned GetSize() const {return size;};
-    GraphObject*& operator[](unsigned idx) const; //u.c.
-    //create object adder
+    const GraphObject*  operator[](unsigned idx) const; //
+          GraphObject*& operator[](unsigned idx);       //u.c. to add new obj
 };
 
 class GraphObject {

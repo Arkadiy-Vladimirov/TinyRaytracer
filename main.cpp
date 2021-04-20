@@ -158,7 +158,7 @@ try {
     Vec3f camera_position(0,0,0), view_direction(1,1,1); 
     Camera camera(camera_position, view_direction);
     Scene scene(1);
-    //scene[0] = new MonochromeSphere();
+    scene[0] = new MonochromeSphere();
   //_____________
 
   //game loop
