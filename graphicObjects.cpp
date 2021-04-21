@@ -2,6 +2,7 @@
 #define __grObj_cpp__
 
 #include "graphicObjects.hpp"
+#include <cmath>
 
 float Camera::render_distance = 1000;
 
@@ -49,14 +50,30 @@ GraphObject*& Scene::operator[](unsigned idx) {
 };
 
 
-Vec3f MonochromeSphere::CheckHit(const Ray& ray) const {
-    //Vec3f OC = location.orig - ray.GetOrigin();// ray origin -> sphere center vector
+bool MonochromeSphere::CheckHit(const Ray& ray, Vec3f& hit_point) const {
     //solve quadratic equation
-    return Vec3f();
+    Vec3f a = ray.GetOrigin(), b = location.orig, l = ray.GetDirection();
+    float B = 2*scalar(a-b,l), C = pow(norm(a-b),2) - pow(radius,2);
+    float discriminant = pow(B,2) - 4*C; //A == 1
+    float k;
+
+    if (discriminant < 0)//no intersection
+        return false;
+    k = (-B -sqrt(discriminant)) / 2;
+    if (k >= 0) {
+        hit_point = a + k*l;
+        return true;
+    }
+    k = (-B +sqrt(discriminant)) / 2;
+    if (k >= 0) {
+        hit_point = a + k*l;
+        return true;
+    }
+    return false; //interection behind the ray
 };
 
 Color MonochromeSphere::Hit(const Ray& ray) const {
-    return Color();
+    return color;
 };
 
 Color Ray::Cast(const Scene& scene) const {
@@ -74,10 +91,11 @@ const GraphObject* Ray::HittedObjectPtr(const Scene& scene) const {//probably ha
     const GraphObject* obj_ptr = NULL; 
 
     for (int i = 0; i < scene.GetSize(); ++i) {
-        new_hit_point = scene[i]->CheckHit(*this);
-        if (norm(new_hit_point) < norm(old_hit_point)) {
-            old_hit_point = new_hit_point;
-            obj_ptr = scene[i];
+        if (scene[i]->CheckHit(*this, new_hit_point)) { 
+            if (norm(new_hit_point) < norm(old_hit_point)) {
+                old_hit_point = new_hit_point;
+                obj_ptr = scene[i];
+            };
         };
     };
 

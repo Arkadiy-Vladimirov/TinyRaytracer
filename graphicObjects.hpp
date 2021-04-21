@@ -71,7 +71,7 @@ public:
     GraphObject(const Repere& f_loc = Repere()) : location(f_loc) {};
     virtual ~GraphObject() {};
 
-    virtual Vec3f CheckHit(const Ray& ray) const = 0;
+    virtual bool CheckHit(const Ray& ray, Vec3f& hit_point) const = 0;
     virtual Color Hit(const Ray& ray) const = 0;
 };
 
@@ -82,7 +82,7 @@ public:
     MonochromeSphere(const Repere& f_loc = Repere(), float f_rad = 1, const Color& f_col = Color()) : GraphObject(f_loc), radius(f_rad), color(f_col) {};
     virtual ~MonochromeSphere() {};
 
-    virtual Vec3f CheckHit(const Ray& ray) const;
+    virtual bool CheckHit(const Ray& ray, Vec3f& hit_point) const;
     virtual Color Hit(const Ray& ray) const;
 };
 

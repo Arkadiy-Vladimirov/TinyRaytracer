@@ -20,6 +20,7 @@ public:
 typedef Vec<2,unsigned> Vec2un;
 typedef Vec<2,float> Vec2f;
 typedef Vec<3,uint8_t> VecCol;
+typedef Vec<3,float> Vec3f;
 
 template<class type>    //float/int/etc. 2d coordinates vector
 struct Vec<2,type> {
