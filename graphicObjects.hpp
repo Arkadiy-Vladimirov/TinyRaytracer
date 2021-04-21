@@ -52,16 +52,16 @@ public:
     Vec3f GetDirection() const {return direction;};
 };
 
-class Scene { //use carefully
+class Scene {
     unsigned size;
     GraphObject** data;
 public:
-    Scene(unsigned f_size) : size(f_size) {data = new GraphObject*[f_size];}
-    ~Scene();//u.c.            
+    Scene() : size(0) {data = new GraphObject*[size];}
+    ~Scene();
 
     unsigned GetSize() const {return size;};
-    const GraphObject*  operator[](unsigned idx) const; //
-          GraphObject*& operator[](unsigned idx);       //u.c. to add new obj
+    const GraphObject*  operator[](unsigned idx) const; //to acces existing object
+          GraphObject*& operator[](unsigned idx);       //to add new object
 };
 
 class GraphObject {

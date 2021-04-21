@@ -48,7 +48,7 @@ template<>              //color vector
 struct Vec<3,uint8_t> {
     uint8_t r, g, b;
 
-    Vec(const uint8_t fr = 255, const uint8_t fg = 255, const uint8_t fb = 255) : r(fr), g(fg), b(fb) {}
+    Vec(const uint8_t fr = 0, const uint8_t fg = 0, const uint8_t fb = 0) : r(fr), g(fg), b(fb) {}
           uint8_t& operator[](unsigned int idx);
     const uint8_t& operator[](unsigned int idx) const;
     const Vec<3,uint8_t>& operator=(const Vec<3,uint8_t> rv) {r = rv.r; g = rv.g; b = rv.b; return *this;};
@@ -241,23 +241,23 @@ Vec<3,type> normalize(const Vec<dim,type>& a) {
 
 //_________________other_structures____________________________
 struct Repere { //different phi not implemented, has to be private
-    Vec<3,float> orig;
-    Vec<3,float> e1, e2, e3;
+    Vec3f orig;
+    Vec3f e1, e2, e3;
 
     //Repere(); generates natural R3 basis
-    Repere() {orig = 0; e1 = Vec<3,float>(1,0,0); e2 = Vec<3,float>(0,1,0); e3 = Vec<3,float>(0,0,1); };
-    Repere(const Vec<3,float>& f_origin, const Vec<3,float>& f_forward, const float phi = 0) { //normalized right triplet 
+    Repere() {orig = 0; e1 = Vec3f(1,0,0); e2 = Vec3f(0,1,0); e3 = Vec3f(0,0,1); }; //natural R3 basis
+    Repere(const Vec3f& f_origin, const Vec3f& f_forward = Vec3f(1,0,0), const float phi = 0) { //normalized right triplet 
         orig = f_origin; const Repere basic;
 
         e1 = normalize(f_forward);
 
-        Vec<3,float> e1_proj = scalar(e1,basic.e1) * basic.e1 + scalar(e1,basic.e2) * basic.e2; //projection on x: <e3,x> = 0 plane
+        Vec3f e1_proj = scalar(e1,basic.e1) * basic.e1 + scalar(e1,basic.e2) * basic.e2; //projection on x: <e3,x> = 0 plane
         e2.x = -e1_proj.y; e2.y = e1_proj.x; e3.z = 0; //+90 degrees rotation
         e2 =  (1/(norm(e2)))*e2;
 
         e3 = cross(e1,e2);
     };
-    Repere(const Vec<3,float>& f_origin, const Vec<3,float>& f_e1, const Vec<3,float> f_e2) {orig = f_origin; e1 = f_e1; e2 = f_e2; e3 = cross(e1,e2); }; //not normalized right triplet
+    Repere(const Vec3f& f_origin, const Vec3f& f_e1, const Vec3f f_e2) {orig = f_origin; e1 = f_e1; e2 = f_e2; e3 = cross(e1,e2); }; //not normalized right triplet
     Repere(const Repere& rep) {orig = rep.orig; e1 = rep.e1; e2 = rep.e2; e3 = rep.e3;};
 };
 //____________________________________________________________

@@ -6,6 +6,7 @@
 
 float Camera::render_distance = 1000;
 
+//_______________Camera_Object_methods_____________________
 Camera::Camera(Vec3f f_origin, Vec3f view_dir, double f_fov, Vec2un resolution, int a_channels, Vec2f f_mat_size) : cam_base(f_origin, view_dir), matrix(resolution.x, resolution.y, a_channels)  { //warning: channels!
     fov = f_fov;
     matrix_size = f_mat_size;
@@ -29,25 +30,43 @@ const Image& Camera::RenderImage(const Scene& scene) {
     }
     return matrix;
 };
+//________________________________________________________
 
 
+//______________Scene_object_methods______________________
 Scene::~Scene() {
-    for (unsigned i = 0; i < size; ++i)
-        delete data[i];
+    for (unsigned i = 0; i < size; ++i) {
+        if (data[i] != NULL)
+            delete data[i];
+    };
     delete[] data;
 };
 
-const GraphObject* Scene::operator[](unsigned idx) const {
+const GraphObject* Scene::operator[](unsigned idx) const {//to acces existing object
     if (idx < size)
         return data[idx];
     else throw "error: array index out of bounds";
 };
 
-GraphObject*& Scene::operator[](unsigned idx) {
+GraphObject*& Scene::operator[](unsigned idx) {           //to create new object
     if (idx < size)
+        throw "error: non constant reference to scene object pointer";
+    if (idx > size)
+        throw "error: non sequential data array initialization";
+    if (idx == size) {
+        unsigned new_size = idx+1;
+        GraphObject** new_data = new GraphObject*[new_size];
+        for (int i = 0; i < size; ++i)
+            new_data[i] = data[i];
+        for (int i = size; i < new_size; ++i)
+            new_data[i] = NULL;
+        delete[] data;
+        data = new_data;
+        size = new_size;
         return data[idx];
-    else throw "error: array index out of bounds";
+    };
 };
+//_________________________________________________________
 
 
 bool MonochromeSphere::CheckHit(const Ray& ray, Vec3f& hit_point) const {
@@ -76,6 +95,7 @@ Color MonochromeSphere::Hit(const Ray& ray) const {
     return color;
 };
 
+//____________________Ray_Object_methods_______________________________
 Color Ray::Cast(const Scene& scene) const {
     Color resCol; //default color (ray reached maximum render distance)
     const GraphObject* hitted_obj_ptr = HittedObjectPtr(scene);
@@ -86,13 +106,13 @@ Color Ray::Cast(const Scene& scene) const {
 };
 
 const GraphObject* Ray::HittedObjectPtr(const Scene& scene) const {//probably has to substitute render distance with skySphere object hit
-    Vec3f old_hit_point = Camera::GetRenderDistance() * direction; //inaccurate
+    Vec3f old_hit_point = orig + Camera::GetRenderDistance() * direction; //inaccurate
     Vec3f new_hit_point;
     const GraphObject* obj_ptr = NULL; 
 
     for (int i = 0; i < scene.GetSize(); ++i) {
         if (scene[i]->CheckHit(*this, new_hit_point)) { 
-            if (norm(new_hit_point) < norm(old_hit_point)) {
+            if (norm(new_hit_point - orig) < norm(old_hit_point - orig)) {
                 old_hit_point = new_hit_point;
                 obj_ptr = scene[i];
             };
@@ -101,5 +121,6 @@ const GraphObject* Ray::HittedObjectPtr(const Scene& scene) const {//probably ha
 
     return obj_ptr;
 };
+//______________________________________________________________________
 
 #endif //__grObj_cpp__
