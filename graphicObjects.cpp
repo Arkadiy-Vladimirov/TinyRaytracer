@@ -3,6 +3,7 @@
 
 #include "graphicObjects.hpp"
 #include <cmath>
+#include <stdio.h>
 
 float Camera::render_distance = 1000;
 
@@ -49,10 +50,10 @@ const GraphObject* Scene::operator[](unsigned idx) const {//to acces existing ob
 };
 
 GraphObject*& Scene::operator[](unsigned idx) {           //to create new object
-    if (idx < size)
-        throw "error: non constant reference to scene object pointer";
-    if (idx > size)
-        throw "error: non sequential data array initialization";
+    if (idx < size) {
+        throw "error: non constant reference to scene object pointer"; }
+    if (idx > size) {
+        throw "error: non sequential data array initialization"; }
     //if (idx == size) {
         unsigned new_size = idx+1;
         GraphObject** new_data = new GraphObject*[new_size];
@@ -99,20 +100,25 @@ const GraphObject* Ray::HittedObjectPtr(const Scene& scene) const {//probably ha
 
 
 //_________________MonochromeSphere_methods______________________________
-bool MonochromeSphere::CheckHit(const Ray& ray, Vec3f& hit_point) const {
+bool Ball::CheckHit(const Ray& ray, Vec3f& hit_point) const {
     //solve quadratic equation
-    Vec3f a = ray.GetOrigin(), b = location.orig, l = ray.GetDirection();
-    float B = 2*scalar(a-b,l), C = pow(norm(a-b),2) - pow(radius,2);
+    Vec3f a = ray.GetOrigin(), b = GetLocation().orig, l = ray.GetDirection();
+    float r = GetRadius();
+
+    float B = 2*scalar(a-b,l), C = pow(norm(a-b),2) - pow(r,2);
     float discriminant = pow(B,2) - 4*C; //A == 1
     float k;
 
-    if (discriminant < 0)//no intersection
+    if (discriminant < 0) {//no intersection
         return false;
+    }
+
     k = (-B -sqrt(discriminant)) / 2;
     if (k >= 0) {
         hit_point = a + k*l;
         return true;
     }
+
     k = (-B +sqrt(discriminant)) / 2;
     if (k >= 0) {
         hit_point = a + k*l;
@@ -121,8 +127,8 @@ bool MonochromeSphere::CheckHit(const Ray& ray, Vec3f& hit_point) const {
     return false; //interection behind the ray
 };
 
-Color MonochromeSphere::Hit(const Ray& ray) const {
-    return color;
+Color EmittingBall::Hit(const Ray& ray) const {
+    return emition;
 };
 //_____________________________________________________________________
 

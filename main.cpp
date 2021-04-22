@@ -160,16 +160,16 @@ try {
     Scene scene;
 
     Vec3f s1_pos(10,10,10); float s1_rad = 3; Color s1_col(0,0,255);
-    scene[0] = new MonochromeSphere(Repere(s1_pos), s1_rad, s1_col);
+    scene[0] = new EmittingBall(Repere(s1_pos), s1_rad, s1_col);
 
     Vec3f s2_pos(15,15,10); float s2_rad = 3; Color s2_col(0,255,255);
-    scene[1] = new MonochromeSphere(Repere(s2_pos), s2_rad, s2_col);
+    scene[1] = new EmittingBall(Repere(s2_pos), s2_rad, s2_col);
 
     Vec3f s3_pos(15,15,15); float s3_rad = 5; Color s3_col(255,0,0);
-    scene[2] = new MonochromeSphere(Repere(s3_pos), s3_rad, s3_col);
+    scene[2] = new EmittingBall(Repere(s3_pos), s3_rad, s3_col);
      
     //Vec3f s4_pos(0,0,0); float s4_rad = 10; Color s4_col(0,255,0);
-    //scene[3] = new MonochromeSphere(Repere(s4_pos), s4_rad, s4_col);
+    //scene[3] = new EmittingBall(Repere(s4_pos), s4_rad, s4_col);
 
 
     screenBuffer = camera.RenderImage(scene);

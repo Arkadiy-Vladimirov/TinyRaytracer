@@ -15,13 +15,6 @@ typedef Vec<3,float> Vec3f;
 class Scene;
 class GraphObject;
 class Ray;
-/*class Interface;
-class Surface;
-class Medium;
-class Sphere;
-class Rectangle;
-class Polygon;
-class InteractionModel;*/
 
 class Camera {
     Repere cam_base; //e1 - fwd, e2 - lft, e3 - top
@@ -80,78 +73,39 @@ public:
 
     virtual bool CheckHit(const Ray& ray, Vec3f& hit_point) const = 0;
     virtual Color Hit(const Ray& ray) const = 0;
+
+    Repere GetLocation() const {return location; };
 };
 
-class GlassBall : public GraphObject {
+class Ball : public GraphObject {
+protected:
     float radius;
 public:
-    GlassBall(const Repere& f_loc = Repere(), float f_rad = 0) : GraphObject(f_loc) {};
-    virtual ~GlassBall() {};
+    Ball(const Repere& f_loc = Repere(), float f_rad = 1) : GraphObject(f_loc), radius(f_rad) {};
+    virtual ~Ball() {};
 
     virtual bool CheckHit(const Ray& ray, Vec3f& hit_point) const;
-    virtual Color Hit(const Ray& ray) const;
+    virtual Color Hit(const Ray& ray) const = 0;
+
+    float GetRadius() const {return radius; };
 };
 
-/*class Interface {   //medium A - medium B interface
-    Surface* surface;
-    //media
-        Medium* inner_medium;
-        Medium* outer_medium;
+//_____GrObj______
+//_____Ball_______
+//_GlassBall______
+//_DiffuseBall____
+//_EmittingBall___
 
-    InteractionModel* model;
+class EmittingBall : public Ball{
+    Color emition;
 public:
-    Interface();
-    Interface(const Surface& f_surf, const Medium& f_inner_medium, const Medium& f_outer_medium, const InteractionModel& f_model);
-    //virtual Color Hit(const Ray& ray) const {
-};
+    EmittingBall(const Repere& f_loc = Repere(), float f_rad = 1, const Color& f_emit = Color()) : Ball(f_loc,f_rad), emition(f_emit) {};
+    virtual ~EmittingBall() {};
 
-
-class Medium {
-    float refractive_index;
-};
-
-
-class Surface {
-    float foo;
-};
-
-class Sphere : public Surface {
-    //geometry
-};
-
-class Polygon : public Surface {
-    //geometry
-};
-
-class Rectangle : public Surface {
-    //geometry
-};
-
-
-class InteractionModel {
-    float foo;
-
-};
-//etc...
-*/
-
-class MonochromeSphere : public GraphObject {
-    float radius;
-    Color color;
-public:
-    MonochromeSphere(const Repere& f_loc = Repere(), float f_rad = 1, const Color& f_col = Color()) : GraphObject(f_loc), radius(f_rad), color(f_col) {};
-    virtual ~MonochromeSphere() {};
-
-    virtual bool CheckHit(const Ray& ray, Vec3f& hit_point) const;
     virtual Color Hit(const Ray& ray) const;
+
+    Color GetEmition() const {return emition; };
 };
 
-/*class Emitter : public GraphObject {
-
-};*/
-
-
-
-    
 #endif //__grObj_hpp__    
     
