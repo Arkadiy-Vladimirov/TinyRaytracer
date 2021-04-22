@@ -159,14 +159,17 @@ try {
     Camera camera(camera_position, view_direction);
     Scene scene;
 
-    Vec3f s1_pos(10,10,10); float s1_rad = 3; Color s1_col(0,0,255);
-    scene[0] = new EmittingBall(Repere(s1_pos), s1_rad, s1_col);
+    Vec3f s1_pos(10,10,10); float s1_rad = 3; //Color s1_col(0,0,255);
+    scene[0] = new RefractiveBall(Repere(s1_pos), s1_rad);
 
-    Vec3f s2_pos(15,15,10); float s2_rad = 3; Color s2_col(0,255,255);
+    //Vec3f s1_pos(10,10,10); float s1_rad = 3; Color s1_col(0,0,255);
+    //scene[0] = new EmittingBall(Repere(s1_pos), s1_rad, s1_col);
+
+    Vec3f s2_pos(20,13.3,13.3); float s2_rad = 1.5; Color s2_col(128,128,64);
     scene[1] = new EmittingBall(Repere(s2_pos), s2_rad, s2_col);
 
-    Vec3f s3_pos(15,15,15); float s3_rad = 5; Color s3_col(255,0,0);
-    scene[2] = new EmittingBall(Repere(s3_pos), s3_rad, s3_col);
+    //Vec3f s3_pos(0,0,0); float s3_rad = 24; Color s3_col(16,16,32);
+    //scene[2] = new EmittingBall(Repere(s3_pos), s3_rad, s3_col);
      
     //Vec3f s4_pos(0,0,0); float s4_rad = 10; Color s4_col(0,255,0);
     //scene[3] = new EmittingBall(Repere(s4_pos), s4_rad, s4_col);

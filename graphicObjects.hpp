@@ -9,7 +9,7 @@
 
 typedef Vec<2,unsigned> Vec2un;
 typedef Vec<2,float> Vec2f;
-typedef Vec<3,uint8_t> Color;
+typedef Vec<3,double> Color;//changed
 typedef Vec<3,float> Vec3f;
 
 class Scene;
@@ -42,14 +42,21 @@ public:
 class Ray {
     Vec3f orig;
     Vec3f direction;
+    unsigned recursion_depth;
+
+    static float epsilon;
+    static unsigned max_recursion_depth;
 public:
-    Ray(Vec3f f_orig, Vec3f f_dir) {orig = f_orig; direction = normalize(f_dir); };
+    Ray(Vec3f f_orig, Vec3f f_dir, unsigned f_rec_d = 0) {orig = f_orig; direction = normalize(f_dir); recursion_depth = f_rec_d; };
 
     Color Cast(const Scene& scene) const;
-    const GraphObject* HittedObjectPtr(const Scene& scene) const; //NULL means no hit
+    const GraphObject* HittedObjectPtr(const Scene& scene, Vec3f& hit_point) const; //NULL means no hit
 
-    Vec3f GetOrigin() const {return orig;};
-    Vec3f GetDirection() const {return direction;};
+    Vec3f        GetOrigin()         const {return orig;            };
+    Vec3f        GetDirection()      const {return direction;       };
+    unsigned     GetRecursionDepth() const {return recursion_depth; };
+
+    static float GetEpsilon()              {return epsilon;         };
 };
 
 class Scene {
@@ -72,7 +79,7 @@ public:
     virtual ~GraphObject() {};
 
     virtual bool CheckHit(const Ray& ray, Vec3f& hit_point) const = 0;
-    virtual Color Hit(const Ray& ray) const = 0;
+    virtual Color Hit(const Ray& ray, const Vec3f& hit_point, const Scene& scene) const = 0;
 
     Repere GetLocation() const {return location; };
 };
@@ -85,9 +92,10 @@ public:
     virtual ~Ball() {};
 
     virtual bool CheckHit(const Ray& ray, Vec3f& hit_point) const;
-    virtual Color Hit(const Ray& ray) const = 0;
+    virtual Color Hit(const Ray& ray, const Vec3f& hit_point, const Scene& scene) const = 0;
 
     float GetRadius() const {return radius; };
+    Vec3f GetNormal(const Vec3f& hit_point) const {return normalize(hit_point - location.orig); }; //returns outer normal
 };
 
 //_____GrObj______
@@ -96,15 +104,29 @@ public:
 //_DiffuseBall____
 //_EmittingBall___
 
-class EmittingBall : public Ball{
-    Color emition;
+class RefractiveBall : public Ball {
+    float inner_refractive_index;
+    float outer_refractive_index;
+    //float absorbtion_coefficient?
 public:
-    EmittingBall(const Repere& f_loc = Repere(), float f_rad = 1, const Color& f_emit = Color()) : Ball(f_loc,f_rad), emition(f_emit) {};
+    RefractiveBall(const Repere& f_loc = Repere(), float f_rad = 1, float f_in_r = 1.5, float f_out_r = 1) : Ball(f_loc,f_rad), inner_refractive_index(f_in_r), outer_refractive_index(f_out_r) {};
+    virtual ~RefractiveBall() {};
+
+    virtual Color Hit(const Ray& ray, const Vec3f& hit_point, const Scene& scene) const;
+
+    void SetConfig(const Vec3f& dir, const Vec3f& dot, Vec3f& normal, float& n1, float& n2, float& alpha) const;
+
+};
+
+class EmittingBall : public Ball{
+    Color emission;
+public:
+    EmittingBall(const Repere& f_loc = Repere(), float f_rad = 1, const Color& f_emis = Color()) : Ball(f_loc,f_rad), emission(f_emis) {};
     virtual ~EmittingBall() {};
 
-    virtual Color Hit(const Ray& ray) const;
+    virtual Color Hit(const Ray& ray, const Vec3f& hit_point, const Scene& scene) const;
 
-    Color GetEmition() const {return emition; };
+    Color GetEmission() const {return emission; };
 };
 
 #endif //__grObj_hpp__    

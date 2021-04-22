@@ -231,6 +231,16 @@ type norm(const Vec<dim,type>& a) {
 }
 
 template <unsigned dim, class type>
+type cos(const Vec<dim,type>& a, const Vec<dim,type>& b) {
+    return scalar(a,b)/(norm(a)*norm(b));
+}
+
+template <unsigned dim, class type>
+type angle(const Vec<dim,type>&a, const Vec<dim,type>& b) {
+    return acos(cos(a,b));
+}
+
+template <unsigned dim, class type>
 Vec<3,type> normalize(const Vec<dim,type>& a) {
     if (norm(a) != 0) 
         return (1/(norm(a)))*a;
