@@ -53,7 +53,7 @@ GraphObject*& Scene::operator[](unsigned idx) {           //to create new object
         throw "error: non constant reference to scene object pointer";
     if (idx > size)
         throw "error: non sequential data array initialization";
-    if (idx == size) {
+    //if (idx == size) {
         unsigned new_size = idx+1;
         GraphObject** new_data = new GraphObject*[new_size];
         for (int i = 0; i < size; ++i)
@@ -64,36 +64,10 @@ GraphObject*& Scene::operator[](unsigned idx) {           //to create new object
         data = new_data;
         size = new_size;
         return data[idx];
-    };
+    //};
 };
-//_________________________________________________________
+//_______________________________________________________________________
 
-
-bool MonochromeSphere::CheckHit(const Ray& ray, Vec3f& hit_point) const {
-    //solve quadratic equation
-    Vec3f a = ray.GetOrigin(), b = location.orig, l = ray.GetDirection();
-    float B = 2*scalar(a-b,l), C = pow(norm(a-b),2) - pow(radius,2);
-    float discriminant = pow(B,2) - 4*C; //A == 1
-    float k;
-
-    if (discriminant < 0)//no intersection
-        return false;
-    k = (-B -sqrt(discriminant)) / 2;
-    if (k >= 0) {
-        hit_point = a + k*l;
-        return true;
-    }
-    k = (-B +sqrt(discriminant)) / 2;
-    if (k >= 0) {
-        hit_point = a + k*l;
-        return true;
-    }
-    return false; //interection behind the ray
-};
-
-Color MonochromeSphere::Hit(const Ray& ray) const {
-    return color;
-};
 
 //____________________Ray_Object_methods_______________________________
 Color Ray::Cast(const Scene& scene) const {
@@ -122,5 +96,34 @@ const GraphObject* Ray::HittedObjectPtr(const Scene& scene) const {//probably ha
     return obj_ptr;
 };
 //______________________________________________________________________
+
+
+//_________________MonochromeSphere_methods______________________________
+bool MonochromeSphere::CheckHit(const Ray& ray, Vec3f& hit_point) const {
+    //solve quadratic equation
+    Vec3f a = ray.GetOrigin(), b = location.orig, l = ray.GetDirection();
+    float B = 2*scalar(a-b,l), C = pow(norm(a-b),2) - pow(radius,2);
+    float discriminant = pow(B,2) - 4*C; //A == 1
+    float k;
+
+    if (discriminant < 0)//no intersection
+        return false;
+    k = (-B -sqrt(discriminant)) / 2;
+    if (k >= 0) {
+        hit_point = a + k*l;
+        return true;
+    }
+    k = (-B +sqrt(discriminant)) / 2;
+    if (k >= 0) {
+        hit_point = a + k*l;
+        return true;
+    }
+    return false; //interection behind the ray
+};
+
+Color MonochromeSphere::Hit(const Ray& ray) const {
+    return color;
+};
+//_____________________________________________________________________
 
 #endif //__grObj_cpp__

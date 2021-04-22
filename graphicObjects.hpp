@@ -15,6 +15,13 @@ typedef Vec<3,float> Vec3f;
 class Scene;
 class GraphObject;
 class Ray;
+/*class Interface;
+class Surface;
+class Medium;
+class Sphere;
+class Rectangle;
+class Polygon;
+class InteractionModel;*/
 
 class Camera {
     Repere cam_base; //e1 - fwd, e2 - lft, e3 - top
@@ -74,6 +81,59 @@ public:
     virtual bool CheckHit(const Ray& ray, Vec3f& hit_point) const = 0;
     virtual Color Hit(const Ray& ray) const = 0;
 };
+
+class GlassBall : public GraphObject {
+    float radius;
+public:
+    GlassBall(const Repere& f_loc = Repere(), float f_rad = 0) : GraphObject(f_loc) {};
+    virtual ~GlassBall() {};
+
+    virtual bool CheckHit(const Ray& ray, Vec3f& hit_point) const;
+    virtual Color Hit(const Ray& ray) const;
+};
+
+/*class Interface {   //medium A - medium B interface
+    Surface* surface;
+    //media
+        Medium* inner_medium;
+        Medium* outer_medium;
+
+    InteractionModel* model;
+public:
+    Interface();
+    Interface(const Surface& f_surf, const Medium& f_inner_medium, const Medium& f_outer_medium, const InteractionModel& f_model);
+    //virtual Color Hit(const Ray& ray) const {
+};
+
+
+class Medium {
+    float refractive_index;
+};
+
+
+class Surface {
+    float foo;
+};
+
+class Sphere : public Surface {
+    //geometry
+};
+
+class Polygon : public Surface {
+    //geometry
+};
+
+class Rectangle : public Surface {
+    //geometry
+};
+
+
+class InteractionModel {
+    float foo;
+
+};
+//etc...
+*/
 
 class MonochromeSphere : public GraphObject {
     float radius;
