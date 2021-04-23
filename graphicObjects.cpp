@@ -29,7 +29,10 @@ const Image& Camera::RenderImage(const Scene& scene) {
         Ray ray(cam_base.orig, GetPixelLocation(x,y) - cam_base.orig);
         Color col = ray.Cast(scene);
         //matrix.PutPixel(x, y, Pixel{col.r, col.g ,col.b, 255});
-        matrix.PutPixel(x, y, Pixel{int(col.x), int(col.y) ,int(col.z), 255});
+        //if ((x==512) && (y == 512)) {
+        //    x = 512; y = 512;
+        //}
+        matrix.PutPixel(x, y, Pixel{static_cast<uint8_t>(round(col.x)), static_cast<uint8_t>(round(col.y)), static_cast<uint8_t>(round(col.z)), 255});
     }
     }
     return matrix;
@@ -87,20 +90,19 @@ Color Ray::Cast(const Scene& scene) const {
 };
 
 const GraphObject* Ray::HittedObjectPtr(const Scene& scene, Vec3f& hit_point) const {//probably has to substitute render distance with skySphere object hit
-    Vec3f old_hit_point = orig + Camera::GetRenderDistance() * direction; //inaccurate
-    Vec3f new_hit_point;
+              hit_point = orig + Camera::GetRenderDistance() * direction; //inaccurate
+    Vec3f sus_hit_point;
     const GraphObject* obj_ptr = NULL; 
 
     for (int i = 0; i < scene.GetSize(); ++i) {
-        if (scene[i]->CheckHit(*this, new_hit_point)) { 
-            if (norm(new_hit_point - orig) < norm(old_hit_point - orig)) {
-                old_hit_point = new_hit_point;
+        if (scene[i]->CheckHit(*this, sus_hit_point)) { 
+            if (norm(sus_hit_point - orig) < norm(hit_point - orig)) {
+                hit_point = sus_hit_point;
                 obj_ptr = scene[i];
             };
         };
     };
 
-    hit_point = new_hit_point; 
     return obj_ptr;
 };
 //______________________________________________________________________
@@ -136,6 +138,7 @@ bool Ball::CheckHit(const Ray& ray, Vec3f& hit_point) const {
 
 Color RefractiveBall::Hit(const Ray& ray, const Vec3f& hit_point, const Scene& scene) const {
     //determine where are we
+    
     float n1, n2; //refractive indices 1 - before surface, 2 - after surface.
     float alpha;  //normal angle in rad < pi/2.
     Vec3f n;      //surface normal, direction: 2->1
@@ -143,19 +146,16 @@ Color RefractiveBall::Hit(const Ray& ray, const Vec3f& hit_point, const Scene& s
     SetConfig(r,hit_point,n,n1,n2,alpha);
 
     //count directions(Snell's law)
-    float beta = n1/n2 * sin(alpha);
-    Vec3f tau = normalize(r+cos(alpha)*n);
-    Vec3f a = normalize(tan(alpha)*tau + n);
-    Vec3f b = normalize(tan( beta)*tau - n);
+    float beta = asin(n1/n2 * sin(alpha));
+    Vec3f tau = r+cos(alpha)*n; if (norm(tau) != 0) { tau = normalize(tau); } 
+    Vec3f a = cos(alpha)*n   + sin(alpha)*tau;
+    Vec3f b = cos(beta)*(-n) + sin(beta) *tau;
+    
 
     //count intensivities
-    float R;
-    //if (n1*sin(alpha) > n2) {   //full internal reflection ??is neccesary??
-    //    R = 1;
-    //} else {                    //Schlick's approximation
+    //Schlick's approximation
         float R0 = pow(((n1-n2)/(n1+n2)),2);
-        R = R0 + (1-R0)*pow((1-cos(alpha)),5); //intensivity of reflected ray 
-    //}
+        float R = R0 + (1-R0)*pow((1-cos(alpha)),5); //intensivity of reflected ray 
 
     //create rays
     Ray reflected_ray(hit_point + Ray::GetEpsilon()*a, a, ray.GetRecursionDepth() + 1);

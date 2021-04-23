@@ -242,9 +242,11 @@ type angle(const Vec<dim,type>&a, const Vec<dim,type>& b) {
 
 template <unsigned dim, class type>
 Vec<3,type> normalize(const Vec<dim,type>& a) {
-    if (norm(a) != 0) 
+    if (norm(a) != 0)  {
         return (1/(norm(a)))*a;
-    else throw "error: unable to normalize vector (zero norm)";
+    } else {
+        throw "error: unable to normalize vector (zero norm)";
+    }
 }
 //____________________________________________________________
 
@@ -262,7 +264,7 @@ struct Repere { //different phi not implemented, has to be private
         e1 = normalize(f_forward);
 
         Vec3f e1_proj = scalar(e1,basic.e1) * basic.e1 + scalar(e1,basic.e2) * basic.e2; //projection on x: <e3,x> = 0 plane
-        e2.x = -e1_proj.y; e2.y = e1_proj.x; e3.z = 0; //+90 degrees rotation
+        e2.x = -e1_proj.y; e2.y = e1_proj.x; e2.z = 0; //+90 degrees rotation (e3.z??)
         e2 =  (1/(norm(e2)))*e2;
 
         e3 = cross(e1,e2);
