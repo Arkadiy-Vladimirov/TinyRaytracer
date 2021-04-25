@@ -109,6 +109,48 @@ int main(int argc, char** argv)
 {
 try {
 
+
+  //__test_area__
+    //Vec<3,float> a(1,2,3), b(3,2,1);
+    //Vec<3,float> c, d;
+    //c = d = a + b;
+    //fprintf(stdout,"%f\n",c.x);
+    //fprintf(stdout,"%f\n",c.y);
+    //fprintf(stdout,"%f\n",c.z); 
+    Vec3f camera_position(0,0,0), view_direction(1,0,0); 
+    Camera camera(camera_position, view_direction);
+    Scene scene;
+
+
+    Vec3f s1_pos(0,0,100000); float s1_rad = 99990; Color s1_col(64,96,64);
+    scene[0] = new DiffuseBall(Repere(s1_pos), s1_rad, s1_col);//floor
+    //__________fwd,lft,dwn___
+    Vec3f s2_pos(13,5,0); float s2_rad = 1; Color s2_col(255,255,255);
+    scene[1] = new EmittingBall(Repere(s2_pos), s2_rad, s2_col);
+
+    Vec3f s3_pos(13,0,0); float s3_rad = 3; Color s3_col(64,64,255);
+    scene[2] = new DiffuseBall(Repere(s3_pos), s3_rad, s3_col);
+     
+    Vec3f s4_pos(0,0,0); float s4_rad = 50; Color s4_col(128,128,192);
+    scene[3] = new EmittingBall(Repere(s4_pos), s4_rad, s4_col);//sky
+
+    Vec3f s5_pos(8,2,0); float s5_rad = 1; //Color s5_col(0,0,255);
+    scene[4] = new RefractiveBall(Repere(s5_pos), s5_rad);
+
+    /*float rn1 = std::rand(); rn1 = rn1/RAND_MAX;
+    float rn2 = std::rand(); rn2 = rn2/RAND_MAX;
+    float rn3 = std::rand(); rn3 = rn3/RAND_MAX;
+    fprintf(stdout,"%f\n",rn1);
+    fprintf(stdout,"%f\n",rn2);
+    fprintf(stdout,"%f\n",rn3);
+
+    int rm = RAND_MAX;
+    fprintf(stdout,"%d\n",rm);*/
+
+	  Image screenBuffer(WINDOW_WIDTH, WINDOW_HEIGHT, 3);
+    screenBuffer = camera.RenderImage(scene);
+  //_____________
+
 	if(!glfwInit())
     return -1;
 
@@ -141,54 +183,11 @@ try {
 		gl_error = glGetError();
 
 	//Image img("../resources/tex.png");
-	Image screenBuffer(WINDOW_WIDTH, WINDOW_HEIGHT, 3);
 
   Image backgroundImage(screenBuffer);                  //
 
   glViewport(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);  GL_CHECK_ERRORS;
   glClearColor(0.0f, 0.0f, 0.0f, 1.0f); GL_CHECK_ERRORS;
-
-  //__test_area__
-    //Vec<3,float> a(1,2,3), b(3,2,1);
-    //Vec<3,float> c, d;
-    //c = d = a + b;
-    //fprintf(stdout,"%f\n",c.x);
-    //fprintf(stdout,"%f\n",c.y);
-    //fprintf(stdout,"%f\n",c.z);
-    
-    Vec3f camera_position(0,0,0), view_direction(1,0,0); 
-    Camera camera(camera_position, view_direction);
-    Scene scene;
-
-    //Vec3f s1_pos(10,0,0); float s1_rad = 2.5; //Color s1_col(0,0,255);
-    //scene[0] = new RefractiveBall(Repere(s1_pos), s1_rad);
-
-    //Vec3f s1_pos(10,10,10); float s1_rad = 3; Color s1_col(0,0,255);
-    //scene[0] = new EmittingBall(Repere(s1_pos), s1_rad, s1_col);
-    //__________fwd,lft,dwn___
-    Vec3f s2_pos(8,8,0); float s2_rad = 1; Color s2_col(255,255,255);
-    scene[0] = new EmittingBall(Repere(s2_pos), s2_rad, s2_col);
-
-    Vec3f s3_pos(10,0,0); float s3_rad = 3; Color s3_col(0,0,255);
-    scene[1] = new DiffuseBall(Repere(s3_pos), s3_rad, s3_col);
-     
-    //Vec3f s4_pos(0,0,0); float s4_rad = 50; Color s4_col(16,16,32);
-    //scene[3] = new EmittingBall(Repere(s4_pos), s4_rad, s4_col);
-
-
-    /*float rn1 = std::rand(); rn1 = rn1/RAND_MAX;
-    float rn2 = std::rand(); rn2 = rn2/RAND_MAX;
-    float rn3 = std::rand(); rn3 = rn3/RAND_MAX;
-    fprintf(stdout,"%f\n",rn1);
-    fprintf(stdout,"%f\n",rn2);
-    fprintf(stdout,"%f\n",rn3);
-
-    int rm = RAND_MAX;
-    fprintf(stdout,"%d\n",rm);*/
-
-    screenBuffer = camera.RenderImage(scene);
-
-  //_____________
 
   //game loop
 	while (!glfwWindowShouldClose(window))

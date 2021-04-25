@@ -7,9 +7,10 @@
 
 
 float Camera::render_distance = 1000;
+unsigned Camera::sqrt_pix_rays = 1; //1 -- no antialiasing. 2 -- satisfactory, 3 -- high
 float Ray::epsilon = 0.01; 
-unsigned Ray::max_recursion_depth = 9;
-unsigned DiffuseBall::dispersed_rays_number = 5;
+unsigned Ray::max_recursion_depth = 3;
+unsigned DiffuseBall::dispersed_rays_number = 8;
 
 //_______________Camera_Object_methods_____________________
 Camera::Camera(Vec3f f_origin, Vec3f view_dir, double f_fov, Vec2un resolution, int a_channels, Vec2f f_mat_size) : cam_base(f_origin, view_dir), matrix(resolution.x, resolution.y, a_channels)  { //warning: channels!
@@ -26,18 +27,35 @@ Camera::Camera(Vec3f f_origin, Vec3f view_dir, double f_fov, Vec2un resolution, 
 };
 
 const Image& Camera::RenderImage(const Scene& scene) {
+    fprintf(stdout, "%s/n", "Rendering started, progress:"); 
+    float progress, max_progress = matrix.Width()*matrix.Height(), step = 0;
     for (int x = 0; x < matrix.Width(); ++x) {
     for (int y = 0; y < matrix.Height(); ++y) {
-        Ray ray(cam_base.orig, GetPixelLocation(x,y) - cam_base.orig);
-        Color col = ray.Cast(scene);
-        //matrix.PutPixel(x, y, Pixel{col.r, col.g ,col.b, 255});
-        //if ((x==512) && (y == 512)) {
-        //    x = 512; y = 512;
-        //}
-        matrix.PutPixel(x, y, Pixel{static_cast<uint8_t>(round(col.x)), static_cast<uint8_t>(round(col.y)), static_cast<uint8_t>(round(col.z)), 255});
+        RenderPixel(scene,x,y);
+        step += 1; 
+        float progress = 100*step/max_progress;
+        fprintf(stdout, "%f", progress);
+        fprintf(stdout, "%s\n", "%");
     }
     }
+    fprintf(stdout, "%s/n", "Rendering finished succesfully."); 
     return matrix;
+};
+
+void Camera::RenderPixel(const Scene& scene, unsigned x, unsigned y) {
+    Vec3f x_step = mat_base.e1 * (1/float(sqrt_pix_rays));
+    Vec3f y_step = mat_base.e2 * (1/float(sqrt_pix_rays));
+    Vec3f base = GetPixelLocation(x,y);
+    Color col(0,0,0);
+    float R =  1/float(sqrt_pix_rays*sqrt_pix_rays); //intensivity of a single ray
+
+    for (int x_cnt = 0; x_cnt < sqrt_pix_rays; ++x_cnt) {
+    for (int y_cnt = 0; y_cnt < sqrt_pix_rays; ++y_cnt) {
+        Ray ray(cam_base.orig, (base + x_cnt*x_step + y_cnt*y_step) - cam_base.orig);
+        col = col + R*ray.Cast(scene);
+    }
+    }
+        matrix.PutPixel(x, y, Pixel{static_cast<uint8_t>(round(col.x)), static_cast<uint8_t>(round(col.y)), static_cast<uint8_t>(round(col.z)), 255});
 };
 //________________________________________________________
 
@@ -187,22 +205,31 @@ Color DiffuseBall::Hit(const Ray& ray, const Vec3f& hit_point, const Scene& scen
     Repere tan_bas(hit_point,n,tau,true); //e1 - normal vector, e2 - tangent vector, e3 - cross product
 
     Color resCol(0,0,0); //black(no light)
-    float R =  1/GetDispersedRaysNumber(); //intensivity of single refracted ray
+    unsigned N = GetDispersedRaysNumber();
     Color RS = GetReflectanceSpectrum();
+    
+    Vec3f disp_dirs[N]; float COS[N]; //cos beetwen normal and disp_dir[i]
+    float R = GetDispersedDirections(tan_bas,alpha,disp_dirs,COS,N);
 
-    for (int i = 0; i < GetDispersedRaysNumber(); ++i) {
-        Ray reflected_ray(tan_bas.orig, GetReflectionDirection(tan_bas, alpha), ray.GetRecursionDepth() - 1);
-        resCol = resCol + R*RS*reflected_ray.Cast(scene);
+    for (int i = 0; i < N ; ++i) {
+        Ray reflected_ray(tan_bas.orig + Ray::GetEpsilon()*disp_dirs[i], disp_dirs[i], ray.GetRecursionDepth() + 1);
+        resCol = resCol + R*COS[i]*RS*reflected_ray.Cast(scene);
     }
 
     return resCol;
 };
 
-Vec3f DiffuseBall::GetReflectionDirection(const Repere& local_basis, float incident_angle) const {
-    float phi =   float(std::rand()); phi   = phi   / RAND_MAX * PI;   // [0,pi], E(phi) = pi/2 - alpha 
-    float theta = float(std::rand()); theta = theta / RAND_MAX * PI;   // [0,pi], E(thetha) = pi/2
-
-    return sin(theta)*sin(phi)*local_basis.e1 + sin(theta)*cos(phi)*local_basis.e2 + cos(theta)*local_basis.e3; //polar transform (e1 and e2 swapped comparing to standart)
+float DiffuseBall::GetDispersedDirections(const Repere& local_basis, float incident_angle, Vec3f* dir_arr, float* cos_arr, unsigned size) const {
+    float phi, theta;
+    float cos_sum = 0; 
+    for (int i = 0; i < size; ++i) {
+         phi  = float(std::rand());  phi  =  phi  / RAND_MAX * PI;   // [0,pi], E(phi) = pi/2 - alpha 
+        theta = float(std::rand()); theta = theta / RAND_MAX * PI;   // [0,pi], E(thetha) = pi/2
+        dir_arr[i] = sin(theta)*sin(phi)*local_basis.e1 + sin(theta)*cos(phi)*local_basis.e2 + cos(theta)*local_basis.e3; //polar transform (e1 and e2 swapped comparing to standart)
+        cos_arr[i] = cos(local_basis.e1,dir_arr[i]);
+        cos_sum += cos_arr[i];
+    }
+    return 1/cos_sum;
 }; 
 
 Color EmittingBall::Hit(const Ray& ray, const Vec3f& hit_point, const Scene& scene) const {

@@ -27,14 +27,15 @@ class Camera {
     Vec2f pixel_size; //cm
 
     static float render_distance;
-
+    static unsigned sqrt_pix_rays; // =sqrt of number of rays casted per pixel
 public:
     Camera(Vec3f f_origin, Vec3f view_dir, double f_fov = PI/2, Vec2un resolution = Vec2un(1024, 1024),
                                                             int a_channels = 3, Vec2f f_mat_size = Vec2f(10,10)); //warning: channels!
     const Image& RenderImage(const Scene& scene);
+            void RenderPixel(const Scene& scene, unsigned x, unsigned y);
 
-    Vec3f GetPixelLocation(unsigned x, unsigned y) const {return mat_base.orig +  x*mat_base.e1 + y*mat_base.e2;};
-    static float GetRenderDistance() {return render_distance;};
+           Vec3f GetPixelLocation(unsigned x, unsigned y) const {return mat_base.orig +  x*mat_base.e1 + y*mat_base.e2; };
+    static float GetRenderDistance()                            {return render_distance; };
 
     //Vec2un MatrixRes() const {return Vec2un(matrix.Width(), matrix.Height());}; 
 };
@@ -129,7 +130,7 @@ public:
 
     virtual Color Hit(const Ray& ray, const Vec3f& hit_point, const Scene& scene)   const;
 
-            Vec3f GetReflectionDirection(const Repere& local_basis, float incident_angle) const;
+            float GetDispersedDirections(const Repere& local_basis, float incident_angle, Vec3f* dir_arr, float* cos_arr, unsigned size) const;
 
             Color    GetReflectanceSpectrum() const {return Color(color.x/255, color.y/255, color.z/255); };
     static  unsigned GetDispersedRaysNumber()       {return dispersed_rays_number; };
