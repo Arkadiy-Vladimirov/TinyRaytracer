@@ -3,6 +3,7 @@
 //#include "lin_al.hpp"
 #include "graphicObjects.hpp"
 #include <stdio.h>
+#include <cstdlib>
 
 #define GLFW_DLL
 #include <GLFW/glfw3.h>
@@ -159,21 +160,31 @@ try {
     Camera camera(camera_position, view_direction);
     Scene scene;
 
-    Vec3f s1_pos(10,0,0); float s1_rad = 2.5; //Color s1_col(0,0,255);
-    scene[0] = new RefractiveBall(Repere(s1_pos), s1_rad);
+    //Vec3f s1_pos(10,0,0); float s1_rad = 2.5; //Color s1_col(0,0,255);
+    //scene[0] = new RefractiveBall(Repere(s1_pos), s1_rad);
 
     //Vec3f s1_pos(10,10,10); float s1_rad = 3; Color s1_col(0,0,255);
     //scene[0] = new EmittingBall(Repere(s1_pos), s1_rad, s1_col);
     //__________fwd,lft,dwn___
-    Vec3f s2_pos(25,5,5); float s2_rad = 1; Color s2_col(128,128,64);
-    scene[1] = new EmittingBall(Repere(s2_pos), s2_rad, s2_col);
+    Vec3f s2_pos(8,8,0); float s2_rad = 1; Color s2_col(255,255,255);
+    scene[0] = new EmittingBall(Repere(s2_pos), s2_rad, s2_col);
 
-    //Vec3f s3_pos(0,0,0); float s3_rad = 50; Color s3_col(16,16,32);
-    //scene[2] = new EmittingBall(Repere(s3_pos), s3_rad, s3_col);
+    Vec3f s3_pos(10,0,0); float s3_rad = 3; Color s3_col(0,0,255);
+    scene[1] = new DiffuseBall(Repere(s3_pos), s3_rad, s3_col);
      
-    //Vec3f s4_pos(0,0,0); float s4_rad = 10; Color s4_col(0,255,0);
+    //Vec3f s4_pos(0,0,0); float s4_rad = 50; Color s4_col(16,16,32);
     //scene[3] = new EmittingBall(Repere(s4_pos), s4_rad, s4_col);
 
+
+    /*float rn1 = std::rand(); rn1 = rn1/RAND_MAX;
+    float rn2 = std::rand(); rn2 = rn2/RAND_MAX;
+    float rn3 = std::rand(); rn3 = rn3/RAND_MAX;
+    fprintf(stdout,"%f\n",rn1);
+    fprintf(stdout,"%f\n",rn2);
+    fprintf(stdout,"%f\n",rn3);
+
+    int rm = RAND_MAX;
+    fprintf(stdout,"%d\n",rm);*/
 
     screenBuffer = camera.RenderImage(scene);
 

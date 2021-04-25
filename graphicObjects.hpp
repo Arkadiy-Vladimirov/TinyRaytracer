@@ -118,6 +118,23 @@ public:
 
 };
 
+class DiffuseBall : public Ball {
+    Color color;
+    float diffusivity;
+
+    static unsigned dispersed_rays_number; //number of rays diffusively reflected at each hit
+public:
+            DiffuseBall(const Repere& f_loc = Repere(), float f_rad = 1, Color f_col = Color(), float dif = 1) : Ball(f_loc,f_rad), color(f_col), diffusivity(dif) {};
+    virtual ~DiffuseBall() {};
+
+    virtual Color Hit(const Ray& ray, const Vec3f& hit_point, const Scene& scene)   const;
+
+            Vec3f GetReflectionDirection(const Repere& local_basis, float incident_angle) const;
+
+            Color    GetReflectanceSpectrum() const {return Color(color.x/255, color.y/255, color.z/255); };
+    static  unsigned GetDispersedRaysNumber()       {return dispersed_rays_number; };
+};
+
 class EmittingBall : public Ball{
     Color emission;
 public:

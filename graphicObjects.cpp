@@ -5,9 +5,11 @@
 #include <cmath>
 #include <stdio.h>
 
+
 float Camera::render_distance = 1000;
 float Ray::epsilon = 0.01; 
 unsigned Ray::max_recursion_depth = 9;
+unsigned DiffuseBall::dispersed_rays_number = 5;
 
 //_______________Camera_Object_methods_____________________
 Camera::Camera(Vec3f f_origin, Vec3f view_dir, double f_fov, Vec2un resolution, int a_channels, Vec2f f_mat_size) : cam_base(f_origin, view_dir), matrix(resolution.x, resolution.y, a_channels)  { //warning: channels!
@@ -138,7 +140,6 @@ bool Ball::CheckHit(const Ray& ray, Vec3f& hit_point) const {
 
 Color RefractiveBall::Hit(const Ray& ray, const Vec3f& hit_point, const Scene& scene) const {
     //determine where are we
-    
     float n1, n2; //refractive indices 1 - before surface, 2 - after surface.
     float alpha;  //normal angle in rad < pi/2.
     Vec3f n;      //surface normal, direction: 2->1
@@ -151,7 +152,6 @@ Color RefractiveBall::Hit(const Ray& ray, const Vec3f& hit_point, const Scene& s
     Vec3f a = cos(alpha)*n   + sin(alpha)*tau;
     Vec3f b = cos(beta)*(-n) + sin(beta) *tau;
     
-
     //count intensivities
     //Schlick's approximation
         float R0 = pow(((n1-n2)/(n1+n2)),2);
@@ -180,6 +180,30 @@ void RefractiveBall::SetConfig(const Vec3f& dir, const Vec3f& dot, Vec3f& normal
     //now we are in n1, hitting n2, normal - on us, alpha - acute normal angle.
 };
 
+Color DiffuseBall::Hit(const Ray& ray, const Vec3f& hit_point, const Scene& scene) const {
+    Vec3f n = GetNormal(hit_point), r = ray.GetDirection();
+    float alpha = angle(-n,r);
+    Vec3f tau = r + cos(alpha) * n;
+    Repere tan_bas(hit_point,n,tau,true); //e1 - normal vector, e2 - tangent vector, e3 - cross product
+
+    Color resCol(0,0,0); //black(no light)
+    float R =  1/GetDispersedRaysNumber(); //intensivity of single refracted ray
+    Color RS = GetReflectanceSpectrum();
+
+    for (int i = 0; i < GetDispersedRaysNumber(); ++i) {
+        Ray reflected_ray(tan_bas.orig, GetReflectionDirection(tan_bas, alpha), ray.GetRecursionDepth() - 1);
+        resCol = resCol + R*RS*reflected_ray.Cast(scene);
+    }
+
+    return resCol;
+};
+
+Vec3f DiffuseBall::GetReflectionDirection(const Repere& local_basis, float incident_angle) const {
+    float phi =   float(std::rand()); phi   = phi   / RAND_MAX * PI;   // [0,pi], E(phi) = pi/2 - alpha 
+    float theta = float(std::rand()); theta = theta / RAND_MAX * PI;   // [0,pi], E(thetha) = pi/2
+
+    return sin(theta)*sin(phi)*local_basis.e1 + sin(theta)*cos(phi)*local_basis.e2 + cos(theta)*local_basis.e3; //polar transform (e1 and e2 swapped comparing to standart)
+}; 
 
 Color EmittingBall::Hit(const Ray& ray, const Vec3f& hit_point, const Scene& scene) const {
     return emission;

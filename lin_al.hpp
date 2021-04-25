@@ -269,7 +269,29 @@ struct Repere { //different phi not implemented, has to be private
 
         e3 = cross(e1,e2);
     };
-    Repere(const Vec3f& f_origin, const Vec3f& f_e1, const Vec3f f_e2) {orig = f_origin; e1 = f_e1; e2 = f_e2; e3 = cross(e1,e2); }; //not normalized right triplet
+    Repere(const Vec3f& f_origin, const Vec3f& f_e1, const Vec3f f_e2, bool CheckNNormalize = false) {
+        if (!CheckNNormalize) {
+            orig = f_origin; e1 = f_e1; e2 = f_e2; e3 = cross(e1,e2);
+        } else {
+            orig = f_origin;
+            if (norm(f_e1) == 0) {
+                throw "Repere constructor error: e1 norm equals zero";
+            }
+            e1 = normalize(f_e1);
+            e2 = f_e2;
+            if (norm(e2) == 0) {
+                        const Repere basic;
+                        if (scalar(e1,basic.e1) != 0) {
+                            e2 = cross(e1, e1+basic.e2);
+                 } else if (scalar(e2,basic.e2) != 0) {
+                            e2 = cross(e1, e1+basic.e3);
+                 } else {   
+                            e2 = cross(e1, e1+basic.e1);
+                 }
+            } e2 = normalize(e2);//now we have e2!
+            e3 = cross(e1,e2);  
+        }
+    };
     Repere(const Repere& rep) {orig = rep.orig; e1 = rep.e1; e2 = rep.e2; e3 = rep.e3;};
 };
 //____________________________________________________________
