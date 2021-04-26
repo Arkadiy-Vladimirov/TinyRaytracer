@@ -3,6 +3,7 @@
 
 #include "Image.h"
 #include "lin_al.hpp"
+#include "interactionModels.hpp"
 #include <cmath>
 
 #define PI 3.14159265
@@ -97,14 +98,17 @@ public:
 
 class PolygonMesh : public GraphObject { //theoretically may be used for arbitrary collection of objects
     GrObjCollection polygons;
+    const MediaInteractionModel* material;
 
     static const GraphObject* hitted_polygon; //a bit weird solution
 public:
-    PolygonMesh(const Repere& f_loc, Vec3f* vert_buf, unsigned buf_size);
+    PolygonMesh(const Repere& f_loc, const MediaInteractionModel* mat, Vec3f* vert_buf, unsigned buf_size);
     virtual ~PolygonMesh() {};
 
     virtual bool CheckHit(const Ray& ray, Vec3f& hit_point) const; 
     virtual Color Hit(const Ray& ray, const Vec3f& hit_point, const GrObjCollection& scene) const;
+
+    Vec3f GetNormal(const Vec3f& dot) const;
 
     static void SetHittedPolygon(const GraphObject* h_p) {hitted_polygon = h_p; };
     static const GraphObject* GetHittedPolygon() {return hitted_polygon; };

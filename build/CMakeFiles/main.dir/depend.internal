@@ -14,6 +14,13 @@ CMakeFiles/main.dir/graphicObjects.cpp.o
  /home/ark/MashGraph/task2/Image.h
  /home/ark/MashGraph/task2/graphicObjects.cpp
  /home/ark/MashGraph/task2/graphicObjects.hpp
+ /home/ark/MashGraph/task2/interactionModels.hpp
+ /home/ark/MashGraph/task2/lin_al.hpp
+CMakeFiles/main.dir/interactionModels.cpp.o
+ /home/ark/MashGraph/task2/Image.h
+ /home/ark/MashGraph/task2/graphicObjects.hpp
+ /home/ark/MashGraph/task2/interactionModels.cpp
+ /home/ark/MashGraph/task2/interactionModels.hpp
  /home/ark/MashGraph/task2/lin_al.hpp
 CMakeFiles/main.dir/main.cpp.o
  ../dependencies/include/GLAD/KHR/khrplatform.h
@@ -21,5 +28,6 @@ CMakeFiles/main.dir/main.cpp.o
  /home/ark/MashGraph/task2/Image.h
  /home/ark/MashGraph/task2/common.h
  /home/ark/MashGraph/task2/graphicObjects.hpp
+ /home/ark/MashGraph/task2/interactionModels.hpp
  /home/ark/MashGraph/task2/lin_al.hpp
  /home/ark/MashGraph/task2/main.cpp

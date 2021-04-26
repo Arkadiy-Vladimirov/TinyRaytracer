@@ -2,6 +2,7 @@
 #define __grObj_cpp__
 
 #include "graphicObjects.hpp"
+#include "interactionModels.hpp"
 #include <cmath>
 #include <stdio.h>
 
@@ -135,7 +136,7 @@ const GraphObject* Ray::HittedObjectPtr(const GrObjCollection& scene, Vec3f& hit
         location.orig = vert[0];
         location.e1 = vertices[1]-location.orig;
         location.e2 = vertices[2]-location.orig;
-        location.e3 = normalize(cross(location.e1,location.e2)); 
+        location.e3 = normalize(cross(location.e1,location.e2)); //outer normal
     };
 
     bool Polygon::CheckHit(const Ray& ray, Vec3f& hit_point) const {
@@ -169,7 +170,7 @@ const GraphObject* Ray::HittedObjectPtr(const GrObjCollection& scene, Vec3f& hit
 
 
 //______________________Polygon_Mesh_methods____________________________
-    PolygonMesh::PolygonMesh(const Repere& f_loc, Vec3f* vert_buf, unsigned buf_size) : GraphObject(f_loc) {
+PolygonMesh::PolygonMesh(const Repere& f_loc, const MediaInteractionModel* mat, Vec3f* vert_buf, unsigned buf_size) : GraphObject(f_loc), material(mat) {
         Vec3f polygon_vert[3];
         unsigned N = buf_size/3;
         for (int i = 0; i < N; ++i) {
@@ -192,7 +193,9 @@ const GraphObject* Ray::HittedObjectPtr(const GrObjCollection& scene, Vec3f& hit
     };
 
     Color PolygonMesh::Hit(const Ray& ray, const Vec3f& hit_point, const GrObjCollection& scene) const {
-        return GetHittedPolygon()->Hit(ray,hit_point,scene);
+        Vec3f normal = GetNormal(GetHittedPolygon()->GetLocation().e3);
+        return material->Interact(ray, hit_point, normal, scene);
+        //return GetHittedPolygon()->Hit(ray,hit_point,scene);
     };
 //______________________________________________________________________
 
@@ -292,9 +295,10 @@ float DiffuseBall::GetDispersedDirections(const Repere& local_basis, float incid
     float phi, theta;
     float cos_sum = 0; 
     for (int i = 0; i < size; ++i) {
-         phi  = float(std::rand());  phi  =  phi  / RAND_MAX * PI;   // [0,pi], E(phi) = pi/2 - alpha 
-        theta = float(std::rand()); theta = theta / RAND_MAX * PI;   // [0,pi], E(thetha) = pi/2
-        dir_arr[i] = sin(theta)*sin(phi)*local_basis.e1 + sin(theta)*cos(phi)*local_basis.e2 + cos(theta)*local_basis.e3; //polar transform (e1 and e2 swapped comparing to standart)
+         phi  = float(std::rand());  phi  =  phi  / RAND_MAX * 2*PI;   // [0,pi], E(phi) = pi/2 - alpha 
+        theta = float(std::rand()); theta = theta / RAND_MAX * (PI/2);   // [0,pi], E(thetha) = pi/2
+        //polar transform: e1 = z, e2 = x, e3 = y;
+        dir_arr[i] = sin(theta)*cos(phi)*local_basis.e2 + sin(theta)*sin(phi)*local_basis.e3 + cos(theta)*local_basis.e1;
         cos_arr[i] = cos(local_basis.e1,dir_arr[i]);
         cos_sum += cos_arr[i];
     }

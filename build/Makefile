@@ -204,6 +204,33 @@ graphicObjects.cpp.s:
 	$(MAKE) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/graphicObjects.cpp.s
 .PHONY : graphicObjects.cpp.s
 
+interactionModels.o: interactionModels.cpp.o
+
+.PHONY : interactionModels.o
+
+# target to build an object file
+interactionModels.cpp.o:
+	$(MAKE) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/interactionModels.cpp.o
+.PHONY : interactionModels.cpp.o
+
+interactionModels.i: interactionModels.cpp.i
+
+.PHONY : interactionModels.i
+
+# target to preprocess a source file
+interactionModels.cpp.i:
+	$(MAKE) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/interactionModels.cpp.i
+.PHONY : interactionModels.cpp.i
+
+interactionModels.s: interactionModels.cpp.s
+
+.PHONY : interactionModels.s
+
+# target to generate assembly for a file
+interactionModels.cpp.s:
+	$(MAKE) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/interactionModels.cpp.s
+.PHONY : interactionModels.cpp.s
+
 main.o: main.cpp.o
 
 .PHONY : main.o
@@ -249,6 +276,9 @@ help:
 	@echo "... graphicObjects.o"
 	@echo "... graphicObjects.i"
 	@echo "... graphicObjects.s"
+	@echo "... interactionModels.o"
+	@echo "... interactionModels.i"
+	@echo "... interactionModels.s"
 	@echo "... main.o"
 	@echo "... main.i"
 	@echo "... main.s"

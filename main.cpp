@@ -121,6 +121,9 @@ try {
     Camera camera(camera_position, view_direction);
     GrObjCollection scene;
 
+    Schlick glass(1.5,1);
+    Lambert lapis_lazuli_gypsum(Color(0,0,255));
+
 
     Vec3f s1_pos(0,0,100000); float s1_rad = 99990; Color s1_col(64,96,64);
     scene[0] = new DiffuseBall(Repere(s1_pos), s1_rad, s1_col);//floor
@@ -143,7 +146,7 @@ try {
     Vec3f s6_pos(7,-1,0);
     Vec3f v1(0,0,0), v2(2,0,2), v3(0,2,2), v4(-2,0,2), v5(0,-2,2), v6(0,0,4);
     Vec3f vert1[24] = {v1,v3,v2,  v1,v4,v3, v1,v5,v4, v1,v2,v3, v6,v2,v3, v6,v3,v4, v6,v4,v5, v6,v5,v2};
-    scene[5] = new PolygonMesh(Repere(s6_pos), vert1, 24);
+    scene[5] = new PolygonMesh(Repere(s6_pos), &lapis_lazuli_gypsum, vert1, 24);
 
     /*float rn1 = std::rand(); rn1 = rn1/RAND_MAX;
     float rn2 = std::rand(); rn2 = rn2/RAND_MAX;

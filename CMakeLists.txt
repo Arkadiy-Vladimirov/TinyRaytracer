@@ -11,6 +11,7 @@ set(SOURCE_FILES
         glad.c
         Image.cpp
         graphicObjects.cpp
+        interactionModels.cpp
         main.cpp)
 
 
