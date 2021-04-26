@@ -11,7 +11,6 @@ unsigned Camera::sqrt_pix_rays = 1; //1 -- no antialiasing. 2 -- satisfactory, 3
 float Ray::epsilon = 0.01; 
 unsigned Ray::max_recursion_depth = 3;
 unsigned DiffuseBall::dispersed_rays_number = 4;
-const GraphObject* PolygonMesh::hitted_polygon = NULL;
 
 //_______________Camera_Object_methods_____________________
 Camera::Camera(Vec3f f_origin, Vec3f view_dir, double f_fov, Vec2un resolution, int a_channels, Vec2f f_mat_size) : cam_base(f_origin, view_dir), matrix(resolution.x, resolution.y, a_channels)  { //warning: channels!
@@ -27,8 +26,8 @@ Camera::Camera(Vec3f f_origin, Vec3f view_dir, double f_fov, Vec2un resolution, 
     mat_base.e2 = pixel_size.y * (-cam_base.e3); 
 };
 
-const Image& Camera::RenderImage(const GrObjCollection& scene) {
-    fprintf(stdout, "%s\n", "Rendering started, progress:"); 
+const Image& Camera::RenderImage(const Scene& scene) {
+    fprintf(stdout, "%s/n", "Rendering started, progress:"); 
     float progress, max_progress = matrix.Width()*matrix.Height(), step = 0;
     for (int x = 0; x < matrix.Width(); ++x) {
     for (int y = 0; y < matrix.Height(); ++y) {
@@ -39,11 +38,11 @@ const Image& Camera::RenderImage(const GrObjCollection& scene) {
         fprintf(stdout, "%s\n", "%");
     }
     }
-    fprintf(stdout, "%s\n", "Rendering finished succesfully."); 
+    fprintf(stdout, "%s/n", "Rendering finished succesfully."); 
     return matrix;
 };
 
-void Camera::RenderPixel(const GrObjCollection& scene, unsigned x, unsigned y) {
+void Camera::RenderPixel(const Scene& scene, unsigned x, unsigned y) {
     Vec3f x_step = mat_base.e1 * (1/float(sqrt_pix_rays));
     Vec3f y_step = mat_base.e2 * (1/float(sqrt_pix_rays));
     Vec3f base = GetPixelLocation(x,y);
@@ -61,8 +60,8 @@ void Camera::RenderPixel(const GrObjCollection& scene, unsigned x, unsigned y) {
 //________________________________________________________
 
 
-//______________GrObjCollection_object_methods______________________
-GrObjCollection::~GrObjCollection() {
+//______________Scene_object_methods______________________
+Scene::~Scene() {
     for (unsigned i = 0; i < size; ++i) {
         if (data[i] != NULL)
             delete data[i];
@@ -70,15 +69,15 @@ GrObjCollection::~GrObjCollection() {
     delete[] data;
 };
 
-const GraphObject* GrObjCollection::operator[](unsigned idx) const {//to acces existing object
+const GraphObject* Scene::operator[](unsigned idx) const {//to acces existing object
     if (idx < size)
         return data[idx];
     else throw "error: array index out of bounds";
 };
 
-GraphObject*& GrObjCollection::operator[](unsigned idx) {           //to create new object
+GraphObject*& Scene::operator[](unsigned idx) {           //to create new object
     if (idx < size) {
-        throw "error: non constant reference to GrObjCollection object pointer"; }
+        throw "error: non constant reference to scene object pointer"; }
     if (idx > size) {
         throw "error: non sequential data array initialization"; }
     //if (idx == size) {
@@ -98,7 +97,7 @@ GraphObject*& GrObjCollection::operator[](unsigned idx) {           //to create 
 
 
 //____________________Ray_Object_methods_______________________________
-Color Ray::Cast(const GrObjCollection& scene) const {
+Color Ray::Cast(const Scene& scene) const {
     Color resCol; //default color (ray reached maximum render distance, or maximum recursion level)
     if (recursion_depth <= max_recursion_depth) {
         Vec3f hit_point;
@@ -110,7 +109,7 @@ Color Ray::Cast(const GrObjCollection& scene) const {
     return resCol;
 };
 
-const GraphObject* Ray::HittedObjectPtr(const GrObjCollection& scene, Vec3f& hit_point) const {//probably has to substitute render distance with skySphere object hit
+const GraphObject* Ray::HittedObjectPtr(const Scene& scene, Vec3f& hit_point) const {//probably has to substitute render distance with skySphere object hit
               hit_point = orig + Camera::GetRenderDistance() * direction; //inaccurate
     Vec3f sus_hit_point;
     const GraphObject* obj_ptr = NULL; 
@@ -130,7 +129,7 @@ const GraphObject* Ray::HittedObjectPtr(const GrObjCollection& scene, Vec3f& hit
 
 
 //_____________________Polygon_methods__________________________________
-    Polygon::Polygon(const Vec3f* vert) {
+    Polygon::Polygon(Vec3f* vert) {
         vertices[0] = vert[0]; vertices[1] = vert[1]; vertices[2] = vert[2];
         location.orig = vert[0];
         location.e1 = vertices[1]-location.orig;
@@ -162,37 +161,8 @@ const GraphObject* Ray::HittedObjectPtr(const GrObjCollection& scene, Vec3f& hit
         return false;
     };
 
-    Color Polygon::Hit(const Ray& ray, const Vec3f& hit_point, const GrObjCollection& scene) const {
+    Color Polygon::Hit(const Ray& ray, const Vec3f& hit_point, const Scene& scene) const {
         return Color();
-    };
-//______________________________________________________________________
-
-
-//______________________Polygon_Mesh_methods____________________________
-    PolygonMesh::PolygonMesh(const Repere& f_loc, Vec3f* vert_buf, unsigned buf_size) : GraphObject(f_loc) {
-        Vec3f polygon_vert[3];
-        unsigned N = buf_size/3;
-        for (int i = 0; i < N; ++i) {
-            for (int j = 0; j < 3; ++j) {
-                polygon_vert[j] = vert_buf[3*i + j] + location.orig;
-                //may add more transformations 
-            }
-            polygons[i] = new Polygon(polygon_vert);
-        }
-    };
-
-    bool PolygonMesh::CheckHit(const Ray& ray, Vec3f& hit_point) const {
-        const GraphObject* hitted_polygon_ptr = ray.HittedObjectPtr(polygons, hit_point);
-        if (hitted_polygon_ptr == NULL) {
-            return false;
-        }
-        
-        SetHittedPolygon(hitted_polygon_ptr);
-        return true;
-    };
-
-    Color PolygonMesh::Hit(const Ray& ray, const Vec3f& hit_point, const GrObjCollection& scene) const {
-        return GetHittedPolygon()->Hit(ray,hit_point,scene);
     };
 //______________________________________________________________________
 
@@ -225,7 +195,7 @@ bool Ball::CheckHit(const Ray& ray, Vec3f& hit_point) const {
     return false; //interection behind the ray
 };
 
-Color RefractiveBall::Hit(const Ray& ray, const Vec3f& hit_point, const GrObjCollection& scene) const {
+Color RefractiveBall::Hit(const Ray& ray, const Vec3f& hit_point, const Scene& scene) const {
     //determine where are we
     float n1, n2; //refractive indices 1 - before surface, 2 - after surface.
     float alpha;  //normal angle in rad < pi/2.
@@ -267,7 +237,7 @@ void RefractiveBall::SetConfig(const Vec3f& dir, const Vec3f& dot, Vec3f& normal
     //now we are in n1, hitting n2, normal - on us, alpha - acute normal angle.
 };
 
-Color DiffuseBall::Hit(const Ray& ray, const Vec3f& hit_point, const GrObjCollection& scene) const {
+Color DiffuseBall::Hit(const Ray& ray, const Vec3f& hit_point, const Scene& scene) const {
     Vec3f n = GetNormal(hit_point), r = ray.GetDirection();
     float alpha = angle(-n,r);
     Vec3f tau = r + cos(alpha) * n;
@@ -301,7 +271,7 @@ float DiffuseBall::GetDispersedDirections(const Repere& local_basis, float incid
     return 1/cos_sum;
 }; 
 
-Color EmittingBall::Hit(const Ray& ray, const Vec3f& hit_point, const GrObjCollection& scene) const {
+Color EmittingBall::Hit(const Ray& ray, const Vec3f& hit_point, const Scene& scene) const {
     return emission;
 };
 //_____________________________________________________________________
