@@ -85,6 +85,27 @@ public:
     Repere GetLocation() const {return location; };
 };
 
+class Polygon: public GraphObject {
+    Vec3f vertices[3];
+public:
+    Polygon(Vec3f* vert);
+    virtual ~Polygon() {};
+
+    virtual bool CheckHit(const Ray& ray, Vec3f& hit_point) const;
+    virtual Color Hit(const Ray& ray, const Vec3f& hit_point, const Scene& scene) const;
+};
+
+class PolygonMesh : public GraphObject {
+    //obj_collections
+
+public:
+    PolygonMesh(const Repere& f_loc = Repere()) : GraphObject(f_loc) {};
+    virtual ~PolygonMesh() {};
+
+    virtual bool CheckHit(const Ray& ray, Vec3f& hit_point) const = 0;
+    virtual Color Hit(const Ray& ray, const Vec3f& hit_point, const Scene& scene) const = 0;
+};
+
 class Ball : public GraphObject {
 protected:
     float radius;

@@ -110,7 +110,7 @@ int main(int argc, char** argv)
 try {
 
 
-  //__test_area__
+  //___________________________scene_definition____________________________
     //Vec<3,float> a(1,2,3), b(3,2,1);
     //Vec<3,float> c, d;
     //c = d = a + b;
@@ -136,6 +136,9 @@ try {
 
     Vec3f s5_pos(8,2,0); float s5_rad = 1; //Color s5_col(0,0,255);
     scene[4] = new RefractiveBall(Repere(s5_pos), s5_rad);
+
+    Vec3f vert[3] = {Vec3f(7,-1,0), Vec3f(7,-2,0), Vec3f(7,-1.5, sqrt(3)/2)};
+    scene[5] = new Polygon(vert);
 
     /*float rn1 = std::rand(); rn1 = rn1/RAND_MAX;
     float rn2 = std::rand(); rn2 = rn2/RAND_MAX;

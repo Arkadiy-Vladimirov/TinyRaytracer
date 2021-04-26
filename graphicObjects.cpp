@@ -10,7 +10,7 @@ float Camera::render_distance = 1000;
 unsigned Camera::sqrt_pix_rays = 1; //1 -- no antialiasing. 2 -- satisfactory, 3 -- high
 float Ray::epsilon = 0.01; 
 unsigned Ray::max_recursion_depth = 3;
-unsigned DiffuseBall::dispersed_rays_number = 8;
+unsigned DiffuseBall::dispersed_rays_number = 4;
 
 //_______________Camera_Object_methods_____________________
 Camera::Camera(Vec3f f_origin, Vec3f view_dir, double f_fov, Vec2un resolution, int a_channels, Vec2f f_mat_size) : cam_base(f_origin, view_dir), matrix(resolution.x, resolution.y, a_channels)  { //warning: channels!
@@ -125,6 +125,45 @@ const GraphObject* Ray::HittedObjectPtr(const Scene& scene, Vec3f& hit_point) co
 
     return obj_ptr;
 };
+//______________________________________________________________________
+
+
+//_____________________Polygon_methods__________________________________
+    Polygon::Polygon(Vec3f* vert) {
+        vertices[0] = vert[0]; vertices[1] = vert[1]; vertices[2] = vert[2];
+        location.orig = vert[0];
+        location.e1 = vertices[1]-location.orig;
+        location.e2 = vertices[2]-location.orig;
+        location.e3 = normalize(cross(location.e1,location.e2)); 
+    };
+
+    bool Polygon::CheckHit(const Ray& ray, Vec3f& hit_point) const {
+        Vec3f E1 = location.e1,       E2 = location.e2;
+        Vec3f O  = ray.GetOrigin(),   D = ray.GetDirection();
+        Vec3f T  = O - location.orig; 
+        Vec3f P = cross(D,E2),        Q = cross(T,E1);
+
+        float det = scalar(P,E1);
+        if (det < 1e-8 && det > -1e-8) {
+            return false;
+        }
+        float inv_det = 1/det;
+
+        float t = inv_det * scalar(Q,E2);
+        float u = inv_det * scalar(P,T);
+        float v = inv_det * scalar(Q,D);
+
+        if ((t > 0) && (u >= 0) && (v >= 0) && (u+v <= 1)) {
+            hit_point = (1-u-v)*vertices[0] + u*vertices[1] + v*vertices[2];
+            return true;
+        }
+
+        return false;
+    };
+
+    Color Polygon::Hit(const Ray& ray, const Vec3f& hit_point, const Scene& scene) const {
+        return Color();
+    };
 //______________________________________________________________________
 
 
