@@ -16,6 +16,7 @@ typedef Vec<3,float> Vec3f;
 class GrObjCollection;
 class GraphObject;
 class Ray;
+class MediaInteractionModel;
 
 class Camera {
     Repere cam_base; //e1 - fwd, e2 - lft, e3 - top
@@ -117,8 +118,9 @@ public:
 class Ball : public GraphObject {
 protected:
     float radius;
+    const MediaInteractionModel* material;
 public:
-    Ball(const Repere& f_loc = Repere(), float f_rad = 1) : GraphObject(f_loc), radius(f_rad) {};
+    Ball(const Repere& f_loc, const MediaInteractionModel* mat, float f_rad = 1) : GraphObject(f_loc), material(mat), radius(f_rad) {};
     virtual ~Ball() {};
 
     virtual bool CheckHit(const Ray& ray, Vec3f& hit_point) const;
