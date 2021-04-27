@@ -142,7 +142,7 @@ const GraphObject* Ray::HittedObjectPtr(const GrObjCollection& scene, Vec3f& hit
         location.orig = vert[0];
         location.e1 = vertices[1]-location.orig;
         location.e2 = vertices[2]-location.orig;
-        location.e3 = normalize(cross(-location.e1,location.e2)); //outer normal
+        location.e3 = normalize(cross(location.e1,location.e2)); //outer normal
     };
 
     bool Polygon::CheckHit(const Ray& ray, Vec3f& hit_point) const {

@@ -119,8 +119,10 @@ try {
     Lambert        dark_blue_gypsum   (Color(0  ,0,  255));
     Lambert        lapis_lazuli_gypsum(Color(31 ,71, 136));
     Lambert        desert_rose_gypsum (Color(207,105,119));
+    Lambert        grey_gypsum        (Color(153,149,140));
     SimpleEmission sky_blue_emitter   (Color(117,187,253));
     SimpleEmission white_emitter      (Color(255,255,255));
+    SimpleEmission yellow_emitter     (Color(255,255,205));
 
     //__________fwd,lft,dwn___
     Vec3f s0_pos(0,0,100000); float s0_rad = 99990;
@@ -148,16 +150,35 @@ try {
     Vec3f vert1[24] = {v3,v1,v2,  v4,v1,v3, v5,v1,v4, v2,v1,v5, v2,v6,v3, v3,v6,v4, v4,v6,v5, v5,v6,v2};
     //scene[5] = new PolygonMesh(Repere(s5_pos), &glass, vert1, 24);
     
-    Vec3f s6_pos(7,-1,0);// 7 -1 0                                       //cube
-    Vec3f v000(0,0,0), v001(0,0,1), v010(0,1,0), v011(0,1,1), v100(1,0,0), v101(1,0,1), v110(1,1,0), v111(1,1,1);
+    Vec3f s6_pos(10,0,0);// 7 -1 0                                       //cube
+    //Vec3f v000(0,0,0), v001(0,0,1), v010(0,1,0), v011(0,1,1), v100(1,0,0), v101(1,0,1), v110(1,1,0), v111(1,1,1);
     //counter-clockwise
-    Vec3f vert2[36] = {v000,v001,v011, v011,v010,v000,   v100,v101,v001, v001,v000,v100,   v001,v101,v111, v111,v011,v001,
-                       v000,v010,v110, v110,v100,v000,   v111,v101,v100, v100,v110,v111,   v011,v111,v110, v110,v010,v011};
+    //Vec3f vert2[36] = {v000,v001,v011, v011,v010,v000,   v100,v101,v001, v001,v000,v100,   v001,v101,v111, v111,v011,v001,
+    //                   v000,v010,v110, v110,v100,v000,   v111,v101,v100, v100,v110,v111,   v011,v111,v110, v110,v010,v011};
     //clockwise
     //Vec3f vert2[36] = {v000,v010,v011, v011,v001,v000,   v100,v000,v001, v001,v101,v100,   v001,v011,v111, v111,v101,v001,
     //                   v000,v100,v110, v110,v010,v000,   v111,v110,v100, v100,v101,v111,   v011,v010,v110, v110,v111,v011};
-    scene[5] = new PolygonMesh(Repere(s6_pos), &glass, vert2, 36,2);
+    //scene[5] = new PolygonMesh(Repere(s6_pos), &glass, vert2, 36,2);
 
+
+
+
+    //panel house
+    float d = 1, l = 3, h = 2, k = 0.3;
+    Vec3f v000(-d,-l,-h), v001(-d,-l,h), v010(-d,l,-h), v011(-d,l,h), v100(d,-l,-h), v101(d,-l,h), v110(d,l,-h), v111(d,l,h);
+    Vec3f vert3[36] = {v111,v101,v100, v100,v110,v111,   v000,v001,v011, v011,v010,v000,
+                       v111,v011,v001, v001,v101,v111,   v000,v010,v110, v110,v100,v000,
+                       v111,v110,v010, v010,v011,v111,   v000,v100,v101, v101,v001,v000};
+    scene[5] = new PolygonMesh(Repere(s6_pos), &grey_gypsum, vert3, 36, k);
+
+    //ligtening windows
+    float eps = Ray::GetEpsilon(); d = -d - eps/2;
+    float sy = l/30, sz = h/20;
+    Vec3f w1(d,l-3*sy,h-3*sz), w2(d,l-8*sy,h-3*sz), w3(d,l-8*sy,h-8*sz), w4(d,l-3*sy,h-8*sz);
+    Vec3f w5(d,l-43*sy,h-23*sz), w6(d,l-48*sy,h-23*sz), w7(d,l-48*sy,h-28*sz), w8(d,l-43*sy,h-28*sz);
+    Vec3f w9(d,l-13*sy,h-31*sz), w10(d,l-18*sy,h-31*sz), w11(d,l-18*sy,h-36*sz), w12(d,l-13*sy,h-36*sz);
+    Vec3f vert4[18] = {w1,w2,w3, w3,w4,w1,   w5,w6,w7, w7,w8,w5,   w9,w10,w11, w11,w12,w9};
+    scene[6] = new PolygonMesh(Repere(s6_pos), &yellow_emitter, vert4, 18, k);
 
     Image screenBuffer(WINDOW_WIDTH, WINDOW_HEIGHT, 3);
     screenBuffer = camera.RenderImage(scene);
