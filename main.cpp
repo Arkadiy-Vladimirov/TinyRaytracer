@@ -110,57 +110,41 @@ int main(int argc, char** argv)
 try {
 
 
-  //___________________________scene_definition____________________________
-    //Vec<3,float> a(1,2,3), b(3,2,1);
-    //Vec<3,float> c, d;
-    //c = d = a + b;
-    //fprintf(stdout,"%f\n",c.x);
-    //fprintf(stdout,"%f\n",c.y);
-    //fprintf(stdout,"%f\n",c.z); 
+  //___________________________scene_definition________________________________________________________
     Vec3f camera_position(0,0,0), view_direction(1,0,0); 
     Camera camera(camera_position, view_direction);
     GrObjCollection scene;
 
-    Schlick glass(1.5,1);
-    Lambert lapis_lazuli_gypsum(Color(0,0,255));
+    Schlick        glass(1.5,1);
+    Lambert        lapis_lazuli_gypsum(Color(31,71,136));
+    Lambert        desert_rose_gypsum(Color(207,105,119));
+    SimpleEmission sky_blue_emitter(Color(117,187,253));
+    SimpleEmission white_emitter(Color(255,255,255));
 
-
-    Vec3f s1_pos(0,0,100000); float s1_rad = 99990; Color s1_col(64,96,64);
-    scene[0] = new DiffuseBall(Repere(s1_pos), s1_rad, s1_col);//floor
     //__________fwd,lft,dwn___
-    Vec3f s2_pos(13,5,0); float s2_rad = 1; Color s2_col(255,255,255);
-    scene[1] = new EmittingBall(Repere(s2_pos), s2_rad, s2_col);
+    Vec3f s0_pos(0,0,100000); float s0_rad = 99990;
+    scene[0] = new Ball(Repere(s0_pos), &desert_rose_gypsum, s0_rad); //floor
 
-    Vec3f s3_pos(13,0,0); float s3_rad = 3; Color s3_col(64,64,255);
-    scene[2] = new DiffuseBall(Repere(s3_pos), s3_rad, s3_col);
-     
-    Vec3f s4_pos(0,0,0); float s4_rad = 50; Color s4_col(128,128,192);
-    scene[3] = new EmittingBall(Repere(s4_pos), s4_rad, s4_col);//sky
+    Vec3f s1_pos(0,0,0); float s1_rad = 1000;
+    scene[1] = new Ball(Repere(s1_pos), &sky_blue_emitter, s1_rad);   //sky
 
-    Vec3f s5_pos(8,2,0); float s5_rad = 1; //Color s5_col(0,0,255);
-    scene[4] = new RefractiveBall(Repere(s5_pos), s5_rad);
+    Vec3f s2_pos(13,5,0); float s2_rad = 1;
+    scene[2] = new Ball(Repere(s2_pos), &white_emitter, s2_rad);      //small emitter
 
-    //Vec3f vert[3] = {Vec3f(7,-1,0), Vec3f(7,-2,0), Vec3f(7,-1.5, sqrt(3)/2)};
-    //scene[5] = new Polygon(vert);
+    Vec3f s3_pos(13,0,0); float s3_rad = 3;
+    scene[3] = new Ball(Repere(s3_pos), &lapis_lazuli_gypsum, s3_rad);
+
+    Vec3f s4_pos(8,2,0); float s4_rad = 1;
+    scene[4] = new Ball(Repere(s4_pos), &glass, s4_rad);
 
     Vec3f s6_pos(7,-1,0);
     Vec3f v1(0,0,0), v2(2,0,2), v3(0,2,2), v4(-2,0,2), v5(0,-2,2), v6(0,0,4);
     Vec3f vert1[24] = {v1,v3,v2,  v1,v4,v3, v1,v5,v4, v1,v2,v3, v6,v2,v3, v6,v3,v4, v6,v4,v5, v6,v5,v2};
-    //scene[5] = new PolygonMesh(Repere(s6_pos), &lapis_lazuli_gypsum, vert1, 24);
-
-    /*float rn1 = std::rand(); rn1 = rn1/RAND_MAX;
-    float rn2 = std::rand(); rn2 = rn2/RAND_MAX;
-    float rn3 = std::rand(); rn3 = rn3/RAND_MAX;
-    fprintf(stdout,"%f\n",rn1);
-    fprintf(stdout,"%f\n",rn2);
-    fprintf(stdout,"%f\n",rn3);
-
-    int rm = RAND_MAX;
-    fprintf(stdout,"%d\n",rm);*/
+    scene[5] = new PolygonMesh(Repere(s6_pos), &glass, vert1, 24);
 
 	  Image screenBuffer(WINDOW_WIDTH, WINDOW_HEIGHT, 3);
     screenBuffer = camera.RenderImage(scene);
-  //_____________
+  //_____________________________________________________________________________________________________
 
 	if(!glfwInit())
     return -1;

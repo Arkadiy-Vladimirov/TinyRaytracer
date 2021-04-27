@@ -116,7 +116,6 @@ public:
 };
 
 class Ball : public GraphObject {
-protected:
     float radius;
     const MediaInteractionModel* material;
 public:
@@ -124,7 +123,7 @@ public:
     virtual ~Ball() {};
 
     virtual bool CheckHit(const Ray& ray, Vec3f& hit_point) const;
-    virtual Color Hit(const Ray& ray, const Vec3f& hit_point, const GrObjCollection& scene) const = 0;
+    virtual Color Hit(const Ray& ray, const Vec3f& hit_point, const GrObjCollection& scene) const;
 
     float GetRadius() const {return radius; };
     Vec3f GetNormal(const Vec3f& hit_point) const {return normalize(hit_point - location.orig); }; //returns outer normal
@@ -136,7 +135,7 @@ public:
 //_DiffuseBall____
 //_EmittingBall___
 
-class RefractiveBall : public Ball {
+/*class RefractiveBall : public Ball {
     float inner_refractive_index;
     float outer_refractive_index;
     //float absorbtion_coefficient?
@@ -176,7 +175,7 @@ public:
     virtual Color Hit(const Ray& ray, const Vec3f& hit_point, const GrObjCollection& scene) const;
 
     Color GetEmission() const {return emission; };
-};
+};*/
 
 #endif //__grObj_hpp__    
     

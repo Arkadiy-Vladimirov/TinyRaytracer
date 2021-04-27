@@ -13,6 +13,10 @@ Color SimpleEmission::Interact(const Ray& ray, const Vec3f& hit_point, const Vec
     return emission;
 };
 
+//Color LambertEmission::Interact(const Ray& ray, const Vec3f& hit_point, const Vec3f& outer_normal, const GrObjCollection& scene) const {
+//    return cos(-outer_normal,ray.GetDirection()) * emission;
+//};
+
 Color Lambert::Interact(const Ray& ray, const Vec3f& hit_point, const Vec3f& outer_normal, const GrObjCollection& scene) const {
     Vec3f n = outer_normal, r = ray.GetDirection();
     float alpha = angle(-n,r);

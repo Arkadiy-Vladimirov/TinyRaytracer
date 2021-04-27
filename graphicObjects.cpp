@@ -6,12 +6,13 @@
 #include <cmath>
 #include <stdio.h>
 
+class MediaInteractionModel;
 
-float Camera::render_distance = 1000;
+float Camera::render_distance = 100000;
 unsigned Camera::sqrt_pix_rays = 1; //1 -- no antialiasing. 2 -- satisfactory, 3 -- high
 float Ray::epsilon = 0.01; 
-unsigned Ray::max_recursion_depth = 3;
-unsigned DiffuseBall::dispersed_rays_number = 4;
+unsigned Ray::max_recursion_depth = 5;
+//unsigned DiffuseBall::dispersed_rays_number = 4;
 const GraphObject* PolygonMesh::hitted_polygon = NULL;
 
 //_______________Camera_Object_methods_____________________
@@ -228,7 +229,12 @@ bool Ball::CheckHit(const Ray& ray, Vec3f& hit_point) const {
     return false; //interection behind the ray
 };
 
-Color RefractiveBall::Hit(const Ray& ray, const Vec3f& hit_point, const GrObjCollection& scene) const {
+Color Ball::Hit(const Ray& ray, const Vec3f& hit_point, const GrObjCollection& scene) const {
+    return material->Interact(ray, hit_point, GetNormal(hit_point), scene); 
+};
+
+
+/*Color RefractiveBall::Hit(const Ray& ray, const Vec3f& hit_point, const GrObjCollection& scene) const {
     //determine where are we
     float n1, n2; //refractive indices 1 - before surface, 2 - after surface.
     float alpha;  //normal angle in rad < pi/2.
@@ -307,7 +313,8 @@ float DiffuseBall::GetDispersedDirections(const Repere& local_basis, float incid
 
 Color EmittingBall::Hit(const Ray& ray, const Vec3f& hit_point, const GrObjCollection& scene) const {
     return emission;
-};
+};*/
+
 //_____________________________________________________________________
 
 #endif //__grObj_cpp__
