@@ -3,13 +3,13 @@
 
 # compile C with /usr/bin/cc
 # compile CXX with /usr/bin/c++
-C_FLAGS = -g   -Wnarrowing
+C_FLAGS = -O3 -DNDEBUG   -Wnarrowing
 
 C_DEFINES = -DGLFW_DLL
 
 C_INCLUDES = -I/home/ark/MashGraph/task2/dependencies/include/GLAD 
 
-CXX_FLAGS = -g   -Wnarrowing -std=gnu++14
+CXX_FLAGS = -O3 -DNDEBUG   -Wnarrowing -std=gnu++14
 
 CXX_DEFINES = -DGLFW_DLL
 

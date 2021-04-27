@@ -100,10 +100,11 @@ public:
 class PolygonMesh : public GraphObject { //theoretically may be used for arbitrary collection of objects
     GrObjCollection polygons;
     const MediaInteractionModel* material;
+    float scale;
 
     static const GraphObject* hitted_polygon; //a bit weird solution
 public:
-    PolygonMesh(const Repere& f_loc, const MediaInteractionModel* mat, Vec3f* vert_buf, unsigned buf_size);
+    PolygonMesh(const Repere& f_loc, const MediaInteractionModel* mat, Vec3f* vert_buf, unsigned buf_size, float scal = 1);
     virtual ~PolygonMesh() {};
 
     virtual bool CheckHit(const Ray& ray, Vec3f& hit_point) const; 

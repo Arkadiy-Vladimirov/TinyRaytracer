@@ -49,14 +49,16 @@ public:
 class Schlick : public MediaInteractionModel {
     float inner_refractive_index;
     float outer_refractive_index;
-    //float absorbtion_coefficient -- not implemented yet
+    Color color;
 public:
-                  Schlick(float f_in_r = 1.5, float f_out_r = 1) : inner_refractive_index(f_in_r), outer_refractive_index(f_out_r) {};
+                  Schlick(float f_in_r = 1.5, float f_out_r = 1, Color col = Color(255,255,255)) : inner_refractive_index(f_in_r), outer_refractive_index(f_out_r), color(col) {};
     virtual      ~Schlick() {};
 
     virtual Color Interact(const Ray& ray, const Vec3f& hit_point, const Vec3f& outer_normal, const GrObjCollection& scene) const;
 
-    void SetConfig(const Vec3f& dir, const Vec3f& dot, const Vec3f& outer_normal, Vec3f& normal, float& n1, float& n2, float& alpha) const;
+    void SetConfig(const Vec3f& dir, const Vec3f& dot, const Vec3f& outer_normal, Vec3f& normal, float& n1, float& n2, float& alpha, Color& abs_coef) const;
+    
+    Color GetAbsorbtionCoefficient() const {return Color(1,1,1) - 1/double(255) * color; }
 
 
 };

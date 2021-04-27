@@ -7,15 +7,11 @@
 #include <cmath>
 #include <stdio.h>
 
-unsigned Lambert::dispersed_rays_number = 8;
+unsigned Lambert::dispersed_rays_number = 4;
 
 Color SimpleEmission::Interact(const Ray& ray, const Vec3f& hit_point, const Vec3f& outer_normal, const GrObjCollection& scene) const {
     return emission;
 };
-
-//Color LambertEmission::Interact(const Ray& ray, const Vec3f& hit_point, const Vec3f& outer_normal, const GrObjCollection& scene) const {
-//    return cos(-outer_normal,ray.GetDirection()) * emission;
-//};
 
 Color Lambert::Interact(const Ray& ray, const Vec3f& hit_point, const Vec3f& outer_normal, const GrObjCollection& scene) const {
     Vec3f n = outer_normal, r = ray.GetDirection();
@@ -59,26 +55,44 @@ Color Schlick::Interact(const Ray& ray, const Vec3f& hit_point, const Vec3f& out
     float alpha;  //normal angle in rad < pi/2.
     Vec3f n;      //surface normal, direction: 2->1
     Vec3f r = ray.GetDirection();
-    SetConfig(r,hit_point,outer_normal,  n,n1,n2,alpha);
+    Color abs_coef;
+    SetConfig(r,hit_point,outer_normal,  n,n1,n2,alpha,abs_coef);
 
-    //count directions(Snell's law)
-    float beta = asin(n1/n2 * sin(alpha));
-    Vec3f tau = r+cos(alpha)*n; if (norm(tau) != 0) { tau = normalize(tau); } 
-    Vec3f a = cos(alpha)*n   + sin(alpha)*tau;
-    Vec3f b = cos(beta)*(-n) + sin(beta) *tau;
+    //calculate direction of reflection(angle of incidence equals to angle of reflection)
+    Vec3f reflect_dir = normalize(r - 2*scalar(n,r)*n);
+    Ray reflected_ray(hit_point + Ray::GetEpsilon()*reflect_dir, reflect_dir, ray.GetRecursionDepth() + 1);
+
+
+    //total internal reflection check 
+    if (n1*sin(alpha) > n2) {
+        return reflected_ray.Cast(scene);
+    }
     
-    //count intensivities
-    //Schlick's approximation
+    //calculate direction of refraction(Snell's law)
+    Vec3f refract_dir = normalize( (n1*r + (sqrt( (n2*n2 -n1*n1)/pow(scalar(n1*r,n),2) + 1 )  -  1) * scalar(n1*r,n) * n) );
+    Ray refracted_ray(hit_point + Ray::GetEpsilon()*refract_dir, refract_dir, ray.GetRecursionDepth() + 1);
+
+    //calculate intensivities(Schlick's approximation)
         float R0 = pow(((n1-n2)/(n1+n2)),2);
         float R = R0 + (1-R0)*pow((1-cos(alpha)),5); //intensivity of reflected ray 
+    
+    //calculate absorbation
+    double distance = norm(hit_point-ray.GetOrigin());
+    Color absorbation = distance*abs_coef;
 
-    //create rays
-    Ray reflected_ray(hit_point + Ray::GetEpsilon()*a, a, ray.GetRecursionDepth() + 1);
-    Ray refracted_ray(hit_point + Ray::GetEpsilon()*b, b, ray.GetRecursionDepth() + 1);
-    return R*reflected_ray.Cast(scene) + (1-R)*refracted_ray.Cast(scene);
+    //total internal absorbation check
+    if (absorbation.x > 1) { absorbation.x = 1;}
+    if (absorbation.y > 1) { absorbation.y = 1;}
+    if (absorbation.z > 1) { absorbation.z = 1;}
+
+    //cast rays
+    Color reflect_col = reflected_ray.Cast(scene);
+    Color refract_col = refracted_ray.Cast(scene);
+    Color res_col = R*reflect_col + (1-R)*refract_col; 
+    return res_col*(Color(1,1,1)-absorbation);
 };
 
-void Schlick::SetConfig(const Vec3f& dir, const Vec3f& dot, const Vec3f& outer_normal, Vec3f& normal, float& n1, float& n2, float& alpha) const {
+void Schlick::SetConfig(const Vec3f& dir, const Vec3f& dot, const Vec3f& outer_normal, Vec3f& normal, float& n1, float& n2, float& alpha, Color& abs_coef) const {
     normal = outer_normal;
     float cos_alpha = cos(normal,dir);
     if (cos_alpha <= 0) {//ray is in extetrior
@@ -86,11 +100,13 @@ void Schlick::SetConfig(const Vec3f& dir, const Vec3f& dot, const Vec3f& outer_n
         n2 = inner_refractive_index;
         //normal - o.k;
         alpha = angle(-normal,dir);
+        abs_coef = 0;
     } else {             //ray is in interior
        n1 = inner_refractive_index;
        n2 = outer_refractive_index;
        normal = -normal;
-       alpha = angle(-normal,dir); 
+       alpha = angle(-normal,dir);
+       abs_coef = GetAbsorbtionCoefficient();
     }
     //now we are in n1, hitting n2, normal - on us, alpha - acute normal angle.
 };

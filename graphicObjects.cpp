@@ -9,9 +9,9 @@
 class MediaInteractionModel;
 
 float Camera::render_distance = 10000;
-unsigned Camera::sqrt_pix_rays = 2; //1 -- no antialiasing. 2 -- satisfactory, 3 -- high
+unsigned Camera::sqrt_pix_rays = 1; //1 -- no antialiasing. 2 -- satisfactory, 3 -- high
 float Ray::epsilon = 0.01; 
-unsigned Ray::max_recursion_depth = 4;
+unsigned Ray::max_recursion_depth = 8;
 const GraphObject* PolygonMesh::hitted_polygon = NULL;
 
 //_______________Camera_Object_methods_____________________
@@ -33,6 +33,9 @@ const Image& Camera::RenderImage(const GrObjCollection& scene) {
     float progress, max_progress = matrix.Width()*matrix.Height(), step = 0;
     for (int x = 0; x < matrix.Width(); ++x) {
     for (int y = 0; y < matrix.Height(); ++y) {
+        //if (x == 413 &&  y == 412) {
+        //    x = 413; y = 412;
+        //}
         RenderPixel(scene,x,y);
         step += 1; 
         float progress = 100*step/max_progress;
@@ -57,6 +60,9 @@ void Camera::RenderPixel(const GrObjCollection& scene, unsigned x, unsigned y) {
         col = col + R*ray.Cast(scene);
     }
     }
+        //if (col.x < 10) {
+        //    col.x = col.x;
+        //}
         matrix.PutPixel(x, y, Pixel{static_cast<uint8_t>(round(col.x)), static_cast<uint8_t>(round(col.y)), static_cast<uint8_t>(round(col.z)), 255});
 };
 //_________________________________________________________________
@@ -136,7 +142,7 @@ const GraphObject* Ray::HittedObjectPtr(const GrObjCollection& scene, Vec3f& hit
         location.orig = vert[0];
         location.e1 = vertices[1]-location.orig;
         location.e2 = vertices[2]-location.orig;
-        location.e3 = normalize(cross(location.e1,location.e2)); //outer normal
+        location.e3 = normalize(cross(-location.e1,location.e2)); //outer normal
     };
 
     bool Polygon::CheckHit(const Ray& ray, Vec3f& hit_point) const {
@@ -170,12 +176,12 @@ const GraphObject* Ray::HittedObjectPtr(const GrObjCollection& scene, Vec3f& hit
 
 
 //______________________Polygon_Mesh_methods____________________________
-PolygonMesh::PolygonMesh(const Repere& f_loc, const MediaInteractionModel* mat, Vec3f* vert_buf, unsigned buf_size) : GraphObject(f_loc), material(mat) {
+PolygonMesh::PolygonMesh(const Repere& f_loc, const MediaInteractionModel* mat, Vec3f* vert_buf, unsigned buf_size, float scal) : GraphObject(f_loc), material(mat), scale(scal) {
         Vec3f polygon_vert[3];
         unsigned N = buf_size/3;
         for (int i = 0; i < N; ++i) {
             for (int j = 0; j < 3; ++j) {
-                polygon_vert[j] = vert_buf[3*i + j] + location.orig;
+                polygon_vert[j] = scale*vert_buf[3*i + j] + location.orig;
                 //may add more transformations 
             }
             polygons[i] = new Polygon(polygon_vert);

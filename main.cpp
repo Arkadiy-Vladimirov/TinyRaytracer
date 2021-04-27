@@ -108,18 +108,19 @@ int initGL()
 int main(int argc, char** argv)
 {
 try {
-
-
   //___________________________scene_definition________________________________________________________
-    Vec3f camera_position(0,0,0), view_direction(1,0,0); 
+    Vec3f camera_position(1,4,-2), view_direction(1,-0.4,0.2);
+    //Vec3f camera_position(0,0,0),  view_direction(1,0,0);
     Camera camera(camera_position, view_direction);
     GrObjCollection scene;
 
     Schlick        glass(1.5,1);
-    Lambert        lapis_lazuli_gypsum(Color(31,71,136));
-    Lambert        desert_rose_gypsum(Color(207,105,119));
-    SimpleEmission sky_blue_emitter(Color(117,187,253));
-    SimpleEmission white_emitter(Color(255,255,255));
+    Schlick        dark_glass(1.5,1,Color(192,192,192));
+    Lambert        dark_blue_gypsum   (Color(0  ,0,  255));
+    Lambert        lapis_lazuli_gypsum(Color(31 ,71, 136));
+    Lambert        desert_rose_gypsum (Color(207,105,119));
+    SimpleEmission sky_blue_emitter   (Color(117,187,253));
+    SimpleEmission white_emitter      (Color(255,255,255));
 
     //__________fwd,lft,dwn___
     Vec3f s0_pos(0,0,100000); float s0_rad = 99990;
@@ -132,17 +133,33 @@ try {
     scene[2] = new Ball(Repere(s2_pos), &white_emitter, s2_rad);      //small emitter
 
     Vec3f s3_pos(13,0,0); float s3_rad = 3;
-    scene[3] = new Ball(Repere(s3_pos), &lapis_lazuli_gypsum, s3_rad);
+    scene[3] = new Ball(Repere(s3_pos), &lapis_lazuli_gypsum, s3_rad);//blue ball
 
     Vec3f s4_pos(8,2,0); float s4_rad = 1;
-    scene[4] = new Ball(Repere(s4_pos), &glass, s4_rad);
+    scene[4] = new Ball(Repere(s4_pos), &dark_glass, s4_rad);              //glass ball
 
-    Vec3f s6_pos(7,-1,0);
+    //BUG: in glass polygon objects vertices order has to be clockwise!!!
+
+    Vec3f s5_pos(7,-1,0);// 7 -1 0                                      //octahedron
     Vec3f v1(0,0,0), v2(2,0,2), v3(0,2,2), v4(-2,0,2), v5(0,-2,2), v6(0,0,4);
-    Vec3f vert1[24] = {v1,v3,v2,  v1,v4,v3, v1,v5,v4, v1,v2,v3, v6,v2,v3, v6,v3,v4, v6,v4,v5, v6,v5,v2};
-    scene[5] = new PolygonMesh(Repere(s6_pos), &glass, vert1, 24);
+    //counter-clockwise
+    //Vec3f vert1[24] = {v1,v3,v2,  v1,v4,v3, v1,v5,v4, v1,v2,v5, v6,v2,v3, v6,v3,v4, v6,v4,v5, v6,v5,v2};
+    //clockwise
+    Vec3f vert1[24] = {v3,v1,v2,  v4,v1,v3, v5,v1,v4, v2,v1,v5, v2,v6,v3, v3,v6,v4, v4,v6,v5, v5,v6,v2};
+    //scene[5] = new PolygonMesh(Repere(s5_pos), &glass, vert1, 24);
+    
+    Vec3f s6_pos(7,-1,0);// 7 -1 0                                       //cube
+    Vec3f v000(0,0,0), v001(0,0,1), v010(0,1,0), v011(0,1,1), v100(1,0,0), v101(1,0,1), v110(1,1,0), v111(1,1,1);
+    //counter-clockwise
+    Vec3f vert2[36] = {v000,v001,v011, v011,v010,v000,   v100,v101,v001, v001,v000,v100,   v001,v101,v111, v111,v011,v001,
+                       v000,v010,v110, v110,v100,v000,   v111,v101,v100, v100,v110,v111,   v011,v111,v110, v110,v010,v011};
+    //clockwise
+    //Vec3f vert2[36] = {v000,v010,v011, v011,v001,v000,   v100,v000,v001, v001,v101,v100,   v001,v011,v111, v111,v101,v001,
+    //                   v000,v100,v110, v110,v010,v000,   v111,v110,v100, v100,v101,v111,   v011,v010,v110, v110,v111,v011};
+    scene[5] = new PolygonMesh(Repere(s6_pos), &glass, vert2, 36,2);
 
-	  Image screenBuffer(WINDOW_WIDTH, WINDOW_HEIGHT, 3);
+
+    Image screenBuffer(WINDOW_WIDTH, WINDOW_HEIGHT, 3);
     screenBuffer = camera.RenderImage(scene);
   //_____________________________________________________________________________________________________
 
