@@ -50,6 +50,16 @@ string
 glad/glad.h
 -
 
+/home/ark/MashGraph/task2/graphicObjects.cpp
+graphicObjects.hpp
+/home/ark/MashGraph/task2/graphicObjects.hpp
+interactionModels.hpp
+/home/ark/MashGraph/task2/interactionModels.hpp
+cmath
+-
+stdio.h
+-
+
 /home/ark/MashGraph/task2/graphicObjects.hpp
 Image.h
 /home/ark/MashGraph/task2/Image.h
@@ -58,6 +68,18 @@ lin_al.hpp
 interactionModels.hpp
 /home/ark/MashGraph/task2/interactionModels.hpp
 cmath
+-
+
+/home/ark/MashGraph/task2/interactionModels.cpp
+interactionModels.hpp
+/home/ark/MashGraph/task2/interactionModels.hpp
+lin_al.hpp
+/home/ark/MashGraph/task2/lin_al.hpp
+graphicObjects.hpp
+/home/ark/MashGraph/task2/graphicObjects.hpp
+cmath
+-
+stdio.h
 -
 
 /home/ark/MashGraph/task2/interactionModels.hpp

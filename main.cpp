@@ -125,7 +125,7 @@ try {
     Vec3f s0_pos(0,0,100000); float s0_rad = 99990;
     scene[0] = new Ball(Repere(s0_pos), &desert_rose_gypsum, s0_rad); //floor
 
-    Vec3f s1_pos(0,0,0); float s1_rad = 1000;
+    Vec3f s1_pos(0,0,0); float s1_rad = 100;
     scene[1] = new Ball(Repere(s1_pos), &sky_blue_emitter, s1_rad);   //sky
 
     Vec3f s2_pos(13,5,0); float s2_rad = 1;

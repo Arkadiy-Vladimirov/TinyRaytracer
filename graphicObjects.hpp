@@ -129,53 +129,6 @@ public:
     Vec3f GetNormal(const Vec3f& hit_point) const {return normalize(hit_point - location.orig); }; //returns outer normal
 };
 
-//_____GrObj______
-//_____Ball_______
-//_GlassBall______
-//_DiffuseBall____
-//_EmittingBall___
-
-/*class RefractiveBall : public Ball {
-    float inner_refractive_index;
-    float outer_refractive_index;
-    //float absorbtion_coefficient?
-public:
-    RefractiveBall(const Repere& f_loc = Repere(), float f_rad = 1, float f_in_r = 1.5, float f_out_r = 1) : Ball(f_loc,f_rad), inner_refractive_index(f_in_r), outer_refractive_index(f_out_r) {};
-    virtual ~RefractiveBall() {};
-
-    virtual Color Hit(const Ray& ray, const Vec3f& hit_point, const GrObjCollection& scene) const;
-
-    void SetConfig(const Vec3f& dir, const Vec3f& dot, Vec3f& normal, float& n1, float& n2, float& alpha) const;
-
-};
-
-class DiffuseBall : public Ball {
-    Color color;
-    float diffusivity;
-
-    static unsigned dispersed_rays_number; //number of rays diffusively reflected at each hit
-public:
-            DiffuseBall(const Repere& f_loc = Repere(), float f_rad = 1, Color f_col = Color(), float dif = 1) : Ball(f_loc,f_rad), color(f_col), diffusivity(dif) {};
-    virtual ~DiffuseBall() {};
-
-    virtual Color Hit(const Ray& ray, const Vec3f& hit_point, const GrObjCollection& scene)   const;
-
-            float GetDispersedDirections(const Repere& local_basis, float incident_angle, Vec3f* dir_arr, float* cos_arr, unsigned size) const;
-
-            Color    GetReflectanceSpectrum() const {return Color(color.x/255, color.y/255, color.z/255); };
-    static  unsigned GetDispersedRaysNumber()       {return dispersed_rays_number; };
-};
-
-class EmittingBall : public Ball{
-    Color emission;
-public:
-    EmittingBall(const Repere& f_loc = Repere(), float f_rad = 1, const Color& f_emis = Color()) : Ball(f_loc,f_rad), emission(f_emis) {};
-    virtual ~EmittingBall() {};
-
-    virtual Color Hit(const Ray& ray, const Vec3f& hit_point, const GrObjCollection& scene) const;
-
-    Color GetEmission() const {return emission; };
-};*/
 
 #endif //__grObj_hpp__    
     
