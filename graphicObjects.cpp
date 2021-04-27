@@ -182,21 +182,21 @@ PolygonMesh::PolygonMesh(const Repere& f_loc, const MediaInteractionModel* mat, 
         }
     };
 
-    bool PolygonMesh::CheckHit(const Ray& ray, Vec3f& hit_point) const {
-        const GraphObject* hitted_polygon_ptr = ray.HittedObjectPtr(polygons, hit_point);
-        if (hitted_polygon_ptr == NULL) {
-            return false;
-        }
-        
-        SetHittedPolygon(hitted_polygon_ptr);
-        return true;
-    };
+bool PolygonMesh::CheckHit(const Ray& ray, Vec3f& hit_point) const {
+    const GraphObject* hitted_polygon_ptr = ray.HittedObjectPtr(polygons, hit_point);
+    if (hitted_polygon_ptr == NULL) {
+        return false;
+    }
 
-    Color PolygonMesh::Hit(const Ray& ray, const Vec3f& hit_point, const GrObjCollection& scene) const {
-        Vec3f normal = GetNormal(GetHittedPolygon()->GetLocation().e3);
-        return material->Interact(ray, hit_point, normal, scene);
-        //return GetHittedPolygon()->Hit(ray,hit_point,scene);
-    };
+    SetHittedPolygon(hitted_polygon_ptr);
+    return true;
+};
+
+Color PolygonMesh::Hit(const Ray& ray, const Vec3f& hit_point, const GrObjCollection& scene) const {
+    Vec3f normal = GetHittedPolygon()->GetLocation().e3;
+    return material->Interact(ray, hit_point, normal, scene);
+    //return GetHittedPolygon()->Hit(ray,hit_point,scene);
+};
 //______________________________________________________________________
 
 

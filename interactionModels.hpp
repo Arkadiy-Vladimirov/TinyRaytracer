@@ -5,6 +5,13 @@
 #include "graphicObjects.hpp"
 #include <cmath>
 
+//fixes_due_to_strange_linking_problem_
+typedef Vec<3,double> Color;
+class GrObjCollection;
+class GraphObject;
+class Ray;
+//_____________________________________
+
 class MediaInteractionModel {
 public:
                   MediaInteractionModel() {};
