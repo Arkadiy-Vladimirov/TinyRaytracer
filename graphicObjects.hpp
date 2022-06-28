@@ -32,7 +32,7 @@ class Camera {
     static unsigned sqrt_pix_rays; // =sqrt of number of rays casted per pixel
 public:
     Camera(Vec3f f_origin, Vec3f view_dir, double f_fov = PI/2, Vec2un resolution = Vec2un(1024, 1024),
-                                                            int a_channels = 3, Vec2f f_mat_size = Vec2f(10,10)); //warning: channels!
+                                                            int a_channels = 4, Vec2f f_mat_size = Vec2f(10,10)); //warning: channels!
     const Image& RenderImage(const GrObjCollection& scene);
             void RenderPixel(const GrObjCollection& scene, unsigned x, unsigned y);
 

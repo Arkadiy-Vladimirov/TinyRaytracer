@@ -7,7 +7,7 @@
 #include <cmath>
 #include <stdio.h>
 
-unsigned Lambert::dispersed_rays_number = 4;
+unsigned Lambert::dispersed_rays_number = 8;
 
 Color SimpleEmission::Interact(const Ray& ray, const Vec3f& hit_point, const Vec3f& outer_normal, const GrObjCollection& scene) const {
     return emission;

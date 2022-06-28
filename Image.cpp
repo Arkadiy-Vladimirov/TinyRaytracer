@@ -63,6 +63,14 @@ Image& Image::operator = (const Image &img) {
 
 int Image::Save(const std::string &a_path)
 {
+  Pixel pix;
+  for (int i = 0; i < height / 2; ++i) {
+  for (int j = 0; j < width; ++j) {
+    pix = data[i * width + j];
+    data[i * width + j] = data[(height - i) * width + j];
+    data[(height - i) * width + j] = pix;
+  }
+  }
   auto extPos = a_path.find_last_of('.');
   if(a_path.substr(extPos, std::string::npos) == ".png" || a_path.substr(extPos, std::string::npos) == ".PNG")
   {

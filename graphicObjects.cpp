@@ -11,7 +11,7 @@ class MediaInteractionModel;
 float Camera::render_distance = 10000;
 unsigned Camera::sqrt_pix_rays = 1; //1 -- no antialiasing. 2 -- satisfactory, 3 -- high
 float Ray::epsilon = 0.01; 
-unsigned Ray::max_recursion_depth = 8;
+unsigned Ray::max_recursion_depth = 4;
 const GraphObject* PolygonMesh::hitted_polygon = NULL;
 
 //_______________Camera_Object_methods_____________________
